@@ -1,279 +1,224 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <title>Feed - UniConnect</title>
+  <meta charset="UTF-8">
+  <title>Painel - UniConnect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-
   <style>
-    body {
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
-      font-family: "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(180deg, #004aad, #007bff);
-      color: #fff;
+      padding: 0;
+    }
+
+    body {
+      background: #fff;
+      color: #002b5c;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      overflow-y: auto;
+      padding: 20px;
     }
 
-    header {
-      width: 100%;
+    h1 {
+      color: #002b5c;
+      font-size: 2rem;
+      margin-bottom: 20px;
       text-align: center;
-      background: #ffd100;
-      color: #004aad;
-      font-size: 1.5rem;
       font-weight: bold;
-      padding: 1rem 0;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
 
     #feed {
-      width: 95%;
-      max-width: 600px;
-      margin: 1rem 0;
+      width: 100%;
+      max-width: 480px;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 25px;
     }
 
     .post {
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 16px;
-      padding: 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      animation: fadeIn 0.4s ease-in;
+      background: #f9fbff;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      box-shadow: 0px 3px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+      animation: fadeIn 0.8s ease;
     }
 
     .post-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
+      gap: 12px;
+      padding: 15px;
     }
 
-    .user {
-      font-weight: bold;
-      color: #ffd100;
-      font-size: 1.1rem;
-    }
-
-    .time {
-      font-size: 0.8rem;
-      opacity: 0.7;
-    }
-
-    .content {
-      font-size: 1rem;
-      margin: 0.5rem 0 1rem 0;
-      line-height: 1.4;
-      color: #f0f0f0;
-    }
-
-    .actions {
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #ffd500;
       display: flex;
-      gap: 1rem;
       align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #002b5c;
+      font-weight: bold;
     }
 
-    .btn {
-      background: none;
-      border: none;
-      color: #ffd100;
+    .username {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #002b5c;
+    }
+
+    .course {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .post-img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 0;
+    }
+
+    .post-body {
+      padding: 15px;
+    }
+
+    .post-body p {
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .emoji {
+      font-size: 1.5rem;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .actions-left {
+      display: flex;
+      gap: 15px;
+      font-size: 1.6rem;
       cursor: pointer;
-      font-size: 1.2rem;
-      transition: transform 0.2s;
     }
 
-    .btn:hover {
-      transform: scale(1.2);
+    .actions-left span:hover {
+      transform: scale(1.1);
+    }
+
+    .likes {
+      font-size: 0.9rem;
+      color: #444;
+      margin-left: 15px;
     }
 
     .comments {
-      margin-top: 0.8rem;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 0.5rem;
+      padding: 10px 15px 15px 15px;
+      border-top: 1px solid #eee;
     }
 
     .comment {
       font-size: 0.9rem;
-      margin-bottom: 0.4rem;
+      color: #333;
+      margin-top: 5px;
     }
 
     .comment strong {
-      color: #ffd100;
-    }
-
-    .add-comment {
-      display: flex;
-      margin-top: 0.5rem;
-      gap: 0.5rem;
-    }
-
-    .add-comment input {
-      flex: 1;
-      padding: 0.4rem;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      font-size: 0.9rem;
-    }
-
-    .add-comment button {
-      background: #ffd100;
-      border: none;
-      color: #004aad;
-      font-weight: bold;
-      border-radius: 6px;
-      padding: 0.4rem 0.8rem;
-      cursor: pointer;
+      color: #002b5c;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Confete */
-    .confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 9999;
-    }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-thumb { background: #ffd500; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ffdf33; }
   </style>
 </head>
 <body>
-  <header>Feed UniConnect 🎓</header>
-
+  <h1>🎓 Painel UniConnect</h1>
   <div id="feed"></div>
 
-  <canvas id="confetti" class="confetti"></canvas>
-
   <script>
+    const connection = new signalR.HubConnectionBuilder().withUrl("/notifyHub").build();
     const feed = document.getElementById("feed");
 
-    // Mantém sua funcionalidade SignalR original
-    const connection = new signalR.HubConnectionBuilder().withUrl("/notifyHub").build();
+    connection.start()
+      .then(() => console.log("✅ Conectado ao SignalR"))
+      .catch(err => console.error("Erro SignalR:", err.toString()));
 
     connection.on("ReceiveMessage", (user, text) => {
-      addPost(user, text);
-      triggerConfetti(); // dispara confete quando chega mensagem 🎉
+      criarPost(user, text);
     });
 
-    connection.start().catch(err => console.error(err));
+    function criarPost(usuario, mensagem) {
+      // Quebra os dados vindos do outro HTML
+      const match = mensagem.match(/(.*)\s\((.*)\)\sfez check-in\s(.*)—\sApresentação:\s(.*)/);
+      let nome = usuario, curso = "", emojiEvento = "🙂", emojiApresentacao = "🙂";
 
-    function addPost(user, text) {
+      if (match) {
+        nome = match[1];
+        curso = match[2];
+        emojiEvento = match[3].trim();
+        emojiApresentacao = match[4].trim();
+      }
+
+      // Elemento post
       const post = document.createElement("div");
       post.className = "post";
 
-      const time = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      const primeiraLetra = nome ? nome[0].toUpperCase() : "?";
+      const curtidas = Math.floor(Math.random() * 100) + 1;
+      const comentariosFake = [
+        { nome: "Maria", texto: "Uau! 🎉 Que legal ver você por aqui!" },
+        { nome: "João", texto: "Evento incrível! 😍" },
+        { nome: "Ana", texto: "👏👏 Mandou bem!" }
+      ];
 
       post.innerHTML = `
         <div class="post-header">
-          <span class="user">${user}</span>
-          <span class="time">${time}</span>
-        </div>
-        <div class="content">${text}</div>
-        <div class="actions">
-          <button class="btn like-btn">❤️</button>
-          <span class="like-count">0</span>
-          <button class="btn comment-btn">💬</button>
-        </div>
-        <div class="comments" style="display:none;">
-          <div class="comment-list"></div>
-          <div class="add-comment">
-            <input type="text" placeholder="Adicione um comentário...">
-            <button>Enviar</button>
+          <div class="avatar">${primeiraLetra}</div>
+          <div>
+            <div class="username">${nome}</div>
+            <div class="course">${curso}</div>
           </div>
+        </div>
+        <img src="https://cdn-icons-png.flaticon.com/512/4278/4278683.png" class="post-img" alt="Comemoração">
+        <div class="post-body">
+          <p>${emojiEvento} <strong>${nome}</strong> fez check-in no evento e avaliou a apresentação ${emojiApresentacao}</p>
+        </div>
+        <div class="post-actions">
+          <div class="actions-left">
+            <span>❤️</span>
+            <span>💬</span>
+            <span>🔁</span>
+          </div>
+          <div class="likes">${curtidas} curtidas</div>
+        </div>
+        <div class="comments">
+          ${comentariosFake.map(c => `<div class="comment"><strong>${c.nome}:</strong> ${c.texto}</div>`).join('')}
         </div>
       `;
 
-      // Curtidas
-      const likeBtn = post.querySelector(".like-btn");
-      const likeCount = post.querySelector(".like-count");
-      let likes = 0;
-      likeBtn.onclick = () => {
-        likes++;
-        likeCount.textContent = likes;
-        likeBtn.style.transform = "scale(1.3)";
-        setTimeout(() => (likeBtn.style.transform = "scale(1)"), 150);
-      };
-
-      // Comentários
-      const commentSection = post.querySelector(".comments");
-      const commentBtn = post.querySelector(".comment-btn");
-      const commentInput = post.querySelector(".add-comment input");
-      const commentList = post.querySelector(".comment-list");
-
-      commentBtn.onclick = () => {
-        commentSection.style.display = commentSection.style.display === "none" ? "block" : "none";
-      };
-
-      const sendComment = post.querySelector(".add-comment button");
-      sendComment.onclick = () => {
-        const text = commentInput.value.trim();
-        if (text) {
-          const c = document.createElement("div");
-          c.className = "comment";
-          c.innerHTML = `<strong>Você:</strong> ${text}`;
-          commentList.appendChild(c);
-          commentInput.value = "";
-        }
-      };
-
       feed.prepend(post);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    // 🎉 Confete simples
-    function triggerConfetti() {
-      const canvas = document.getElementById("confetti");
-      const ctx = canvas.getContext("2d");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      const particles = [];
-
-      for (let i = 0; i < 80; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height - canvas.height,
-          color: ["#FFD100", "#007BFF", "#FFFFFF"][Math.floor(Math.random() * 3)],
-          size: Math.random() * 6 + 4,
-          speed: Math.random() * 3 + 2,
-        });
-      }
-
-      const draw = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          p.y += p.speed;
-        });
-      };
-
-      let frames = 0;
-      const animate = () => {
-        draw();
-        frames++;
-        if (frames < 60) requestAnimationFrame(animate);
-      };
-      animate();
-    }
-
-    // Mensagem inicial de exemplo
-    addPost("Sistema", "Bem-vindo ao feed da Secretaria 🎓");
   </script>
 </body>
 </html>
