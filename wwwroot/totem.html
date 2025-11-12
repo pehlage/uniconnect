@@ -164,7 +164,7 @@
 <body>
   <div class="container" id="container">
 
-    <button id="checkinBtn" class="btn">Fazer Check-In</button>
+    <button id="checkinBtn" class="btn">Check-In</button>
 
     <!-- Etapa 1 -->
     <div id="form" class="form">
@@ -297,7 +297,6 @@
         console.error("Erro SignalR:", err);
       }
 
-      // Simula carregamento e reinicia
       setTimeout(() => {
         loadingOverlay.style.display = "none";
         location.reload(); // Refresh suave (reinicia tudo)
