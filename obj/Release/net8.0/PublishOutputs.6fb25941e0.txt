@@ -1,0 +1,7 @@
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\out\UniConnect.Server.exe
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\out\appsettings.Development.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\out\appsettings.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\out\UniConnect.Server.dll
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\out\UniConnect.Server.deps.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\out\UniConnect.Server.runtimeconfig.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\out\UniConnect.Server.pdb
