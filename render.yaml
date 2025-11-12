@@ -1,9 +1,11 @@
 services:
   - type: web
     name: uniconnect-server
-    env: dotnet
+    runtime: docker
     plan: free
-    buildCommand: "dotnet publish UniConnect.Server/UniConnect.Server.csproj -c Release -o out"
-    startCommand: "dotnet out/UniConnect.Server.dll"
     rootDir: UniConnect.Server
     autoDeploy: true
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://+:10000
+    dockerfilePath: UniConnect.Server/Dockerfile
