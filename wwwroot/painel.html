@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Painel Secretaria - UniConnect</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+</head>
+<body>
+  <h1>Painel Secretaria</h1>
+  <div id="messages"></div>
+
+  <script>
+    const connection = new signalR.HubConnectionBuilder().withUrl("/notifyHub").build();
+    connection.on("ReceiveMessage", (user, text) => {
+      const div = document.getElementById('messages');
+      const p = document.createElement('p');
+      p.textContent = `${user}: ${text}`;
+      div.appendChild(p);
+    });
+    connection.start();
+  </script>
+</body>
+</html>
