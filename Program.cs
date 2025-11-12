@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
@@ -6,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Adiciona SignalR e CORS
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
@@ -15,10 +16,12 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Configura CORS e arquivos estáticos
 app.UseCors();
-app.UseDefaultFiles();  // 🔹 Permite servir index.html automaticamente
-app.UseStaticFiles();   // 🔹 Permite servir arquivos .html, .js, etc
+app.UseDefaultFiles();  // Serve automaticamente index.html
+app.UseStaticFiles();   // Serve arquivos estáticos (HTML, JS, CSS, etc)
 
+// Mapeia os endpoints
 app.MapHub<NotifyHub>("/notifyHub");
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 {
@@ -26,7 +29,13 @@ app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
     return Results.Ok();
 });
 
+// 🔹 Configura porta dinâmica (Render usa $PORT)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://*:{port}");
+
+// Inicia o servidor
 app.Run();
 
+// Classes auxiliares
 public record Message(string User, string Text);
 public class NotifyHub : Hub { }

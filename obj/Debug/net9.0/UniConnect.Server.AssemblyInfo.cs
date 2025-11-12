@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UniConnect.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5514815d20dc9394ee1697ff7eed53c34b5e7990")]
 [assembly: System.Reflection.AssemblyProductAttribute("UniConnect.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UniConnect.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

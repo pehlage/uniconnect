@@ -28,3 +28,4 @@ C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net9.0\refint\Un
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net9.0\UniConnect.Server.pdb
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net9.0\UniConnect.Server.genruntimeconfig.cache
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net9.0\ref\UniConnect.Server.dll
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net9.0\UniConnect.Server.sourcelink.json
