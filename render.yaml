@@ -6,6 +6,8 @@ services:
     branch: main
     autoDeploy: true
     dockerfilePath: Dockerfile
+    build:
+      noCache: true
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production

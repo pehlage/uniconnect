@@ -1,5 +1,11 @@
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\web.config
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\appsettings.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\appsettings.Development.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\appsettings.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\UniConnect.Server.deps.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\UniConnect.Server.runtimeconfig.json
+C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\UniConnect.Server.staticwebassets.endpoints.json
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\UniConnect.Server.staticwebassets.runtime.json
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\UniConnect.Server.staticwebassets.endpoints.json
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\UniConnect.Server.exe
@@ -27,9 +33,3 @@ C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net8.0\refint\Un
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net8.0\UniConnect.Server.pdb
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net8.0\UniConnect.Server.genruntimeconfig.cache
 C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\obj\Debug\net8.0\ref\UniConnect.Server.dll
-C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\web.config
-C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\appsettings.Development.json
-C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\appsettings.json
-C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\UniConnect.Server.deps.json
-C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\UniConnect.Server.runtimeconfig.json
-C:\Users\Windows\Desktop\UniConnect\UniConnect.Server\bin\Debug\net8.0\out\UniConnect.Server.staticwebassets.endpoints.json
