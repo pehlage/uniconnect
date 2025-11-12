@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: seu-app
+    name: uniconnect-server
     env: docker
     plan: free
     branch: main
     autoDeploy: true
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: Dockerfile
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
