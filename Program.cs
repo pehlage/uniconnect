@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// SignalR + CORS
+// 🔹 Adiciona serviços necessários
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
@@ -16,24 +16,41 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-app.UseCors();
-app.UseDefaultFiles();  // Serve index.html automaticamente
-app.UseStaticFiles();   // Serve HTML/CSS/JS
+// 🔹 Porta dinâmica para Render
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://*:{port}");
 
+// 🔹 Configura middleware
+app.UseCors();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+// 🔹 Hub do SignalR
 app.MapHub<NotifyHub>("/notifyHub");
 
-// Endpoint opcional para testes via POST
+// 🔹 Rota explícita para checkin.html
+app.MapGet("/checkin", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("wwwroot/checkin.html");
+});
+
+// 🔹 Rota explícita para painel.html
+app.MapGet("/painel", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync("wwwroot/painel.html");
+});
+
+// 🔹 Endpoint para envio de mensagens (API)
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 {
     await hub.Clients.All.SendAsync("ReceiveMessage", msg.User, msg.Text);
     return Results.Ok();
 });
 
-// Porta dinâmica exigida pelo Render
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://*:{port}");
-
 app.Run();
 
+// 🔹 Modelos
 public record Message(string User, string Text);
 public class NotifyHub : Hub { }
