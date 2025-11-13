@@ -1,4 +1,3 @@
-// app.js - conexão SignalR + renderização do feed
 document.addEventListener("DOMContentLoaded", async () => {
   const connection = new signalR.HubConnectionBuilder()
     .withUrl("/notifyHub")
@@ -17,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // === FEED ===
   function renderPost(user, text) {
-    if (!feedEl) return; // só existe no painel.html
+    if (!feedEl) return;
     const card = document.createElement("div");
     card.className = "post-card";
     card.innerHTML = `
@@ -31,10 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // === SIGNALR ===
-  connection.on("ReceiveMessage", (user, text) => {
-    console.log("Nova mensagem recebida:", user, text);
-    renderPost(user, text);
-  });
+  connection.on("ReceiveMessage", (user, text) => renderPost(user, text));
 
   connection.on("UserConnected", (name) => {
     if (usersList) {
@@ -53,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   await connection.start();
-  console.log("SignalR conectado.");
+  console.log("✅ SignalR conectado.");
 
   if (currentUser) {
     await connection.invoke("Register", currentUser);
@@ -78,15 +74,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       await connection.invoke("Register", name);
     });
   }
-});
 
-// carregar posts existentes ao abrir o feed
-if (feedEl) {
-  try {
-    const resp = await fetch('/api/posts');
-    const posts = await resp.json();
-    posts.forEach(p => renderPost(p.user, p.text));
-  } catch (err) {
-    console.error('Erro ao carregar posts:', err);
+  // ✅ Carregar posts existentes
+  if (feedEl) {
+    try {
+      const resp = await fetch('/api/posts');
+      if (resp.ok) {
+        const posts = await resp.json();
+        posts.forEach(p => renderPost(p.user, p.text));
+      }
+    } catch (err) {
+      console.error('Erro ao carregar posts:', err);
+    }
   }
-}
+});
