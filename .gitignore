@@ -1,0 +1,56 @@
+# Build outputs
+bin/
+obj/
+out/
+*.exe
+*.dll
+*.pdb
+*.log
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# SQLite and other databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Example/test databases allowed
+!testdata.db
+!database_example.sqlite
+
+# macOS dynamic libs
+*.dylib
+
+# Visual Studio
+.vs/
+.vscode/
+*.swp
+*.tmp
+
+# Environment / secrets
+.env
+*.key
+*.pem
+
+# JetBrains / Rider
+.idea/
+
+# Python (caso tenha scripts auxiliares)
+__pycache__/
+*.pyc
+
+# Node (caso tenha front-end com React/Angular)
+node_modules/
+dist/
+build/

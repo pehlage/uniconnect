@@ -1,117 +1,92 @@
-// app.js - SignalR connection and UI glue for feed and users
-const feedEl = document.getElementById('feed');
-const usersListEls = [
-  document.getElementById('usersList'),
-  document.getElementById('usersListCP'),
-  document.getElementById('usersListAlerts'),
-  document.getElementById('usersListEvents')
-].filter(Boolean);
+// app.js - conexão SignalR + renderização do feed
+document.addEventListener("DOMContentLoaded", async () => {
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/notifyHub")
+    .configureLogging(signalR.LogLevel.Information)
+    .build();
 
-// state
-let username = localStorage.getItem('uniconnect.username') || null;
-const users = new Set();
+  const feedEl = document.getElementById("feed");
+  const usersList = document.getElementById("usersList") || document.getElementById("usersListCP");
+  const loginModal = document.getElementById("loginModal");
+  const loginSubmit = document.getElementById("loginSubmit");
+  const loginClose = document.getElementById("loginClose");
+  const loginName = document.getElementById("loginName");
+  const btnLogin = document.getElementById("btnLogin") || document.getElementById("btnLogin2");
 
-// build connection
-const connection = new signalR.HubConnectionBuilder().withUrl('/notifyHub').withAutomaticReconnect().build();
+  let currentUser = localStorage.getItem("uniconnect.username");
 
-connection.onreconnecting(err => console.warn('Reconnecting...', err));
-connection.onreconnected(() => {
-  if (username) registerPresence(username);
-});
-connection.start()
-  .then(() => {
-    console.log('SignalR connected');
-    if (username) registerPresence(username);
-  })
-  .catch(err => console.error(err));
-
-// handle incoming posts
-connection.on('ReceiveMessage', (user, text) => {
-  appendPost(user, text);
-});
-
-// presence events
-connection.on('UserConnected', (user) => {
-  users.add(user);
-  renderUsers();
-});
-connection.on('UserDisconnected', (user) => {
-  users.delete(user);
-  renderUsers();
-});
-
-// helpers
-function appendPost(user, text) {
-  const post = document.createElement('div');
-  post.className = 'post';
-  const initial = (user && user[0]) ? user[0].toUpperCase() : '?';
-  const title = (text && text.split('\n')[0]) || '';
-  post.innerHTML = `
-    <div class="post-header">
-      <div class="avatar">${initial}</div>
-      <div>
-        <div class="username">${escapeHtml(user)}</div>
-        <div class="course muted">${escapeHtml(title)}</div>
+  // === FEED ===
+  function renderPost(user, text) {
+    if (!feedEl) return; // só existe no painel.html
+    const card = document.createElement("div");
+    card.className = "post-card";
+    card.innerHTML = `
+      <div class="post-header">
+        <strong>${user}</strong>
+        <span class="time">${new Date().toLocaleTimeString()}</span>
       </div>
-    </div>
-    <div class="post-body"><p>${escapeHtml(text)}</p></div>
-  `;
-  feedEl.prepend(post);
-}
+      <div class="post-body">${text.replace(/\n/g, "<br>")}</div>
+    `;
+    feedEl.prepend(card);
+  }
 
-// render users list in all sidebars present
-function renderUsers(){
-  usersListEls.forEach(listEl => {
-    listEl.innerHTML = '';
-    [...users].reverse().forEach(u => {
-      const li = document.createElement('li');
-      li.innerHTML = `<div style="width:36px;height:36px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center">${escapeHtml(u[0]||'?')}</div>
-        <div><strong>${escapeHtml(u)}</strong><div class="muted small">online</div></div>`;
-      listEl.appendChild(li);
+  // === SIGNALR ===
+  connection.on("ReceiveMessage", (user, text) => {
+    console.log("Nova mensagem recebida:", user, text);
+    renderPost(user, text);
+  });
+
+  connection.on("UserConnected", (name) => {
+    if (usersList) {
+      const li = document.createElement("li");
+      li.textContent = name;
+      usersList.appendChild(li);
+    }
+  });
+
+  connection.on("UserDisconnected", (name) => {
+    if (usersList) {
+      [...usersList.children].forEach(li => {
+        if (li.textContent === name) li.remove();
+      });
+    }
+  });
+
+  await connection.start();
+  console.log("SignalR conectado.");
+
+  if (currentUser) {
+    await connection.invoke("Register", currentUser);
+  }
+
+  // === LOGIN ===
+  if (btnLogin) {
+    btnLogin.addEventListener("click", () => loginModal.classList.remove("hidden"));
+  }
+
+  if (loginClose) {
+    loginClose.addEventListener("click", () => loginModal.classList.add("hidden"));
+  }
+
+  if (loginSubmit) {
+    loginSubmit.addEventListener("click", async () => {
+      const name = loginName.value.trim();
+      if (!name) return alert("Digite seu nome");
+      localStorage.setItem("uniconnect.username", name);
+      currentUser = name;
+      loginModal.classList.add("hidden");
+      await connection.invoke("Register", name);
     });
-  });
-}
-
-// escape
-function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;') }
-
-// presence - call hub method 'Register' (server must implement)
-function registerPresence(name){
-  try {
-    connection.invoke('Register', name).catch(err => console.error('Register err', err));
-    localStorage.setItem('uniconnect.username', name);
-    username = name;
-  } catch(e){ console.error(e) }
-}
-
-// login modal
-const loginModal = document.getElementById('loginModal');
-const btnLogin = document.getElementById('btnLogin');
-const btnLogin2 = document.getElementById('btnLogin2');
-const btnLogin3 = document.getElementById('btnLogin3');
-const btnLogin4 = document.getElementById('btnLogin4');
-const loginName = document.getElementById('loginName');
-const loginSubmit = document.getElementById('loginSubmit');
-const loginClose = document.getElementById('loginClose');
-
-[btnLogin, btnLogin2, btnLogin3, btnLogin4].forEach(b=>{
-  if(!b) return;
-  b.addEventListener('click', ()=> {
-    loginModal.classList.remove('hidden');
-  });
+  }
 });
-if(loginClose) loginClose.addEventListener('click', ()=> loginModal.classList.add('hidden'));
-if(loginSubmit){
-  loginSubmit.addEventListener('click', ()=> {
-    const name = (loginName.value || '').trim();
-    if(!name) { alert('Digite um nome'); return; }
-    registerPresence(name);
-    loginModal.classList.add('hidden');
-  });
-}
 
-// if already have username in storage, try register
-if(username) {
-  // delay a bit to ensure connection established
-  setTimeout(()=> registerPresence(username), 500);
+// carregar posts existentes ao abrir o feed
+if (feedEl) {
+  try {
+    const resp = await fetch('/api/posts');
+    const posts = await resp.json();
+    posts.forEach(p => renderPost(p.user, p.text));
+  } catch (err) {
+    console.error('Erro ao carregar posts:', err);
+  }
 }

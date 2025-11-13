@@ -1,0 +1,121 @@
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* remove scroll global */
+      background: var(--bg);
+    }
+
+    .app {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .content {
+      flex: 1;
+      margin-left: 240px;
+      margin-right: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      overflow-y: auto; /* se o conteúdo for grande, só aqui rola */
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .create-card {
+      max-width: 600px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .create-card h2 {
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .create-card input,
+    .create-card textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #e5e9f2;
+      font-size: 0.95rem;
+      outline: none;
+      resize: none;
+      background: #f9fbff;
+    }
+
+    .create-card textarea {
+      min-height: 150px;
+    }
+
+    .row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .actions-row {
+      justify-content: flex-end;
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      background: var(--yellow);
+      color: var(--accent);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    /* Sidebar ajustes */
+    .sidebar-left,
+    .sidebar-right {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-right {
+      right: 0;
+    }
+
+    @media (max-width: 960px) {
+      html, body {
+        overflow-y: auto; /* ativa scroll no mobile */
+      }
+      .content {
+        margin: 0;
+        padding: 1.5rem;
+      }
+      .sidebar-right {
+        display: none;
+      }
+    }
