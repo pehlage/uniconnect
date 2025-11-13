@@ -16,7 +16,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // CORS + SignalR + Controllers
 builder.Services.AddCors(o =>
 {
-    o.AddDefaultPolicy(p => p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+    o.AddDefaultPolicy(p => p
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowAnyOrigin());
 });
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
@@ -27,6 +30,7 @@ var app = builder.Build();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://*:{port}");
 
+// Middleware
 app.UseCors();
 app.UseDefaultFiles();
 app.UseStaticFiles();
@@ -41,22 +45,46 @@ app.MapGet("/create-post", () => Results.Redirect("/create-post.html"));
 app.MapGet("/alerts", () => Results.Redirect("/alerts.html"));
 app.MapGet("/events", () => Results.Redirect("/events.html"));
 
-// Notify endpoint
+// Notify endpoint (exemplo de SignalR)
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 {
     await hub.Clients.All.SendAsync("ReceiveMessage", msg.User, msg.Text);
     return Results.Ok();
 });
 
-// ✅ Garante que o banco é criado e migrações aplicadas ao iniciar
+// ✅ Inicializa o banco de dados de forma segura
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate(); // executa as migrations existentes
+    try
+    {
+        Console.WriteLine("📦 Verificando banco de dados...");
+        db.Database.EnsureCreated(); // cria se não existir
+        var pending = db.Database.GetPendingMigrations();
+
+        if (pending.Any())
+        {
+            Console.WriteLine("🚀 Aplicando migrações pendentes...");
+            db.Database.Migrate();
+            Console.WriteLine("✅ Migrações aplicadas com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine("✅ Nenhuma migração pendente.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"⚠️ Falha ao aplicar migrações: {ex.Message}");
+    }
 }
+
+// Timeout seguro no Render
+builder.WebHost.UseShutdownTimeout(TimeSpan.FromSeconds(10));
 
 app.Run();
 
+// Records e Hub
 public record Message(string User, string Text);
 
 public class NotifyHub : Hub
