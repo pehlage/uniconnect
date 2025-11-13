@@ -291,11 +291,15 @@
 
       loadingOverlay.style.display = "flex"; // Mostra o loading azul
 
-      try {
-        await connection.invoke("SendMessage", "CheckIn", `${name} (${course}) fez check-in ${ratingEvent} — Apresentação: ${ratingPresentation}`);
-      } catch (err) {
-        console.error("Erro SignalR:", err);
-      }
+      await fetch("/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: "CheckIn",
+          text: `${name} (${course}) fez check-in ${ratingEvent} — Apresentação: ${ratingPresentation}`
+        })
+      });
+
 
       setTimeout(() => {
         loadingOverlay.style.display = "none";
