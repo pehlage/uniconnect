@@ -27,11 +27,11 @@ app.UseStaticFiles();
 app.MapHub<NotifyHub>("/notifyHub");
 
 // explicit routes
-app.MapGet("/", () => Results.Redirect("/index.html"));
-app.MapGet("/feed", () => Results.Redirect("/index.html"));
-app.MapGet("/create-post", () => Results.Redirect("/create-post.html"));
-app.MapGet("/alerts", () => Results.Redirect("/alerts.html"));
-app.MapGet("/events", () => Results.Redirect("/events.html"));
+app.MapGet("/", () => Results.Redirect("/UniConnect.Server/wwwroot/painel.html"));
+app.MapGet("/feed", () => Results.Redirect("/UniConnect.Server/wwwroot/painel.html"));
+app.MapGet("/create-post", () => Results.Redirect("/UniConnect.Server/wwwroot/create-post.html"));
+app.MapGet("/alerts", () => Results.Redirect("/UniConnect.Server/wwwroot/alerts.html"));
+app.MapGet("/events", () => Results.Redirect("/UniConnect.Server/wwwroot/events.html"));
 
 // notify endpoint (POST)
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
