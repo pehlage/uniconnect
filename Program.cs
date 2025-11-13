@@ -26,14 +26,14 @@ app.UseStaticFiles();
 // SignalR hub
 app.MapHub<NotifyHub>("/notifyHub");
 
-// explicit routes
+// Rotas explícitas (Render-friendly)
 app.MapGet("/", () => Results.Redirect("/painel.html"));
 app.MapGet("/feed", () => Results.Redirect("/painel.html"));
 app.MapGet("/create-post", () => Results.Redirect("/create-post.html"));
 app.MapGet("/alerts", () => Results.Redirect("/alerts.html"));
 app.MapGet("/events", () => Results.Redirect("/events.html"));
 
-// notify endpoint (POST)
+// Endpoint POST /notify
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 {
     await hub.Clients.All.SendAsync("ReceiveMessage", msg.User, msg.Text);
@@ -42,20 +42,17 @@ app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 
 app.Run();
 
-// message model
+// Models
 public record Message(string User, string Text);
 
-// Hub with presence methods
+// Hub
 public class NotifyHub : Hub
 {
-    // client calls Register(name)
     public async Task Register(string name)
     {
-        // inform all clients that a user connected
         await Clients.All.SendAsync("UserConnected", name);
     }
 
-    // client can call Unregister on manual logout (optional)
     public async Task Unregister(string name)
     {
         await Clients.All.SendAsync("UserDisconnected", name);
@@ -63,7 +60,6 @@ public class NotifyHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        // Optionally, you can broadcast a generic disconnected event (client should send Unregister before leaving if possible)
         await base.OnDisconnectedAsync(exception);
     }
 }
