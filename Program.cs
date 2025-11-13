@@ -30,36 +30,45 @@ var app = builder.Build();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://*:{port}");
 
-// Middleware
+// Middleware estático
 app.UseCors();
-app.UseDefaultFiles();
 app.UseStaticFiles();
+
+// ✅ Define painel.html como página padrão (substitui index.html)
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/" || context.Request.Path == "/index.html")
+    {
+        context.Response.Redirect("/painel.html");
+        return;
+    }
+    await next();
+});
 
 app.MapControllers();
 app.MapHub<NotifyHub>("/notifyHub");
 
 // Rotas explícitas
-app.MapGet("/", () => Results.Redirect("/painel.html"));
 app.MapGet("/feed", () => Results.Redirect("/painel.html"));
 app.MapGet("/create-post", () => Results.Redirect("/create-post.html"));
 app.MapGet("/alerts", () => Results.Redirect("/alerts.html"));
 app.MapGet("/events", () => Results.Redirect("/events.html"));
 
-// Notify endpoint (exemplo de SignalR)
+// Endpoint SignalR
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 {
     await hub.Clients.All.SendAsync("ReceiveMessage", msg.User, msg.Text);
     return Results.Ok();
 });
 
-// ✅ Inicializa o banco de dados de forma segura
+// ✅ Inicializa banco e aplica migrações com segurança
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     try
     {
         Console.WriteLine("📦 Verificando banco de dados...");
-        db.Database.EnsureCreated(); // cria se não existir
+        db.Database.EnsureCreated();
         var pending = db.Database.GetPendingMigrations();
 
         if (pending.Any())
@@ -79,12 +88,10 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Timeout seguro no Render
 builder.WebHost.UseShutdownTimeout(TimeSpan.FromSeconds(10));
 
 app.Run();
 
-// Records e Hub
 public record Message(string User, string Text);
 
 public class NotifyHub : Hub
