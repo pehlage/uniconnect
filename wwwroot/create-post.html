@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>UniConnect — Criar Post</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+  <link rel="stylesheet" href="/UniConnect.Server/wwwroot/css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar-left">
+      <div class="brand">
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="logo">
+        <h2>UniConnect</h2>
+      </div>
+      <nav class="nav">
+        <a href="/UniConnect.Server/wwwroot/painel.html" class="nav-link">🏠 Feed</a>
+        <a href="/UniConnect.Server/wwwroot/create-post.html" class="nav-link active">➕ Criar post</a>
+        <a href="/UniConnect.Server/wwwroot/alerts.html" class="nav-link">🚨 Alertas</a>
+        <a href="/UniConnect.Server/wwwroot/events.html" class="nav-link">📅 Eventos</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="btnLogin2" class="btn small">Entrar</button>
+      </div>
+    </aside>
+
+    <main class="content center">
+      <div class="card create-card">
+        <h2>Novo post</h2>
+        <input id="postTitle" placeholder="Título" />
+        <textarea id="postBody" placeholder="Escreva aqui..."></textarea>
+        <div class="row">
+          <input id="postCourse" placeholder="Curso (opcional)" />
+          <input id="postEmoji" placeholder="Emoji (opcional)" />
+        </div>
+        <div class="row actions-row">
+          <button id="publishBtn" class="btn">Publicar</button>
+          <a href="/UniConnect.Server/wwwroot/painel.html" class="btn ghost">Voltar</a>
+        </div>
+        <small class="muted">Ao publicar, o post será enviado em tempo real ao painel.</small>
+      </div>
+    </main>
+
+    <aside class="sidebar-right">
+      <div class="users-header">Usuários online</div>
+      <ul id="usersListCP" class="users-list"></ul>
+    </aside>
+  </div>
+
+  <script src="/UniConnect.Server/wwwroot/js/create-post.js"></script>
+  <script src="/UniConnect.Server/wwwroot/js/app.js"></script>
+</body>
+</html>

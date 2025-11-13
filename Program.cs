@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 Adiciona serviços necessários
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
@@ -16,33 +15,25 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 🔹 Porta dinâmica para Render
+// Porta dinâmica (Render)
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://*:{port}");
 
-// 🔹 Configura middleware
 app.UseCors();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// 🔹 Hub do SignalR
+// SignalR hub
 app.MapHub<NotifyHub>("/notifyHub");
 
-// 🔹 Rota explícita para checkin.html
-app.MapGet("/checkin", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync("wwwroot/checkin.html");
-});
+// explicit routes
+app.MapGet("/", () => Results.Redirect("/index.html"));
+app.MapGet("/feed", () => Results.Redirect("/index.html"));
+app.MapGet("/create-post", () => Results.Redirect("/create-post.html"));
+app.MapGet("/alerts", () => Results.Redirect("/alerts.html"));
+app.MapGet("/events", () => Results.Redirect("/events.html"));
 
-// 🔹 Rota explícita para painel.html
-app.MapGet("/painel", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync("wwwroot/painel.html");
-});
-
-// 🔹 Endpoint para envio de mensagens (API)
+// notify endpoint (POST)
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 {
     await hub.Clients.All.SendAsync("ReceiveMessage", msg.User, msg.Text);
@@ -51,6 +42,28 @@ app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 
 app.Run();
 
-// 🔹 Modelos
+// message model
 public record Message(string User, string Text);
-public class NotifyHub : Hub { }
+
+// Hub with presence methods
+public class NotifyHub : Hub
+{
+    // client calls Register(name)
+    public async Task Register(string name)
+    {
+        // inform all clients that a user connected
+        await Clients.All.SendAsync("UserConnected", name);
+    }
+
+    // client can call Unregister on manual logout (optional)
+    public async Task Unregister(string name)
+    {
+        await Clients.All.SendAsync("UserDisconnected", name);
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        // Optionally, you can broadcast a generic disconnected event (client should send Unregister before leaving if possible)
+        await base.OnDisconnectedAsync(exception);
+    }
+}

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <title>UniConnect — Feed</title>
+  <title>UniConnect — Alertas</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
   <link rel="stylesheet" href="/UniConnect.Server/wwwroot/css/style.css" />
@@ -15,40 +15,27 @@
         <h2>UniConnect</h2>
       </div>
       <nav class="nav">
-        <a href="/UniConnect.Server/wwwroot/painel.html" class="nav-link active">🏠 Feed</a>
+        <a href="/UniConnect.Server/wwwroot/painel.html" class="nav-link">🏠 Feed</a>
         <a href="/UniConnect.Server/wwwroot/create-post.html" class="nav-link">➕ Criar post</a>
-        <a href="/UniConnect.Server/wwwroot/alerts.html" class="nav-link">🚨 Alertas</a>
+        <a href="/UniConnect.Server/wwwroot/alerts.html" class="nav-link active">🚨 Alertas</a>
         <a href="/UniConnect.Server/wwwroot/events.html" class="nav-link">📅 Eventos</a>
       </nav>
       <div class="sidebar-footer">
-        <button id="btnLogin" class="btn small">Entrar</button>
+        <button id="btnLogin3" class="btn small">Entrar</button>
       </div>
     </aside>
 
     <main class="content">
-      <header class="topbar">
-        <h1>Feed</h1>
-        <div class="search">
-          <input id="searchInput" placeholder="Pesquisar..." />
-        </div>
-      </header>
-
-      <section id="feed" class="feed"></section>
+      <header class="topbar"><h1>Alertas</h1></header>
+      <section class="feed">
+        <div class="card">Nenhum alerta no momento.</div>
+      </section>
     </main>
 
     <aside class="sidebar-right">
       <div class="users-header">Usuários online</div>
-      <ul id="usersList" class="users-list"></ul>
+      <ul id="usersListAlerts" class="users-list"></ul>
     </aside>
-  </div>
-
-  <div id="loginModal" class="modal hidden">
-    <div class="modal-card">
-      <h3>Entrar</h3>
-      <input id="loginName" placeholder="Seu nome" />
-      <button id="loginSubmit" class="btn">Entrar</button>
-      <button id="loginClose" class="btn ghost">Fechar</button>
-    </div>
   </div>
 
   <script src="/UniConnect.Server/wwwroot/js/app.js"></script>
