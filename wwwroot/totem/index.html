@@ -5,82 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Totem Check-In — UniConnect</title>
 
-  <!-- GARANTA QUE ESTE CAMINHO ESTÁ CORRETO -->
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
 
-  <!-- ================================
-       TELA DE DESCANSO
-  ================================= -->
-  <div id="lockScreen" class="lock-screen">
+<!-- =====================================================
+    TELA DE DESCANSO (LOCKSCREEN iPhone)
+===================================================== -->
+<div id="lockScreen" class="lock-screen">
 
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Unip_logo.png" 
-         class="faculty-logo" />
+  <!-- Poster do Evento -->
+  <img src="./assets/evento.jpg" class="event-poster" />
 
-    <div class="lock-content">
-      <h1 class="lock-title">Bem-vindo à Feira de Projetos</h1>
-      <p class="lock-sub">Deslize para cima para começar</p>
+  <div class="lock-overlay">
+    <h1 class="lock-title">Feira de Projetos</h1>
+    <p class="lock-sub">Deslize para cima<br>ou pressione Enter</p>
+    <div class="arrow-up">⬆</div>
+  </div>
+</div>
 
-      <div class="arrow-up">⬆</div>
+
+<!-- =====================================================
+    TELA DO TOTEM
+===================================================== -->
+<div id="totemPage" class="totem-container hidden">
+
+  <button id="backBtn" class="back-btn">←</button>
+
+  <div class="totem-card">
+    <h1 class="title">Check-In do Evento</h1>
+
+    <button id="checkinBtn" class="btn primary">Iniciar Check-In</button>
+
+    <div id="form" class="hidden">
+      <div class="search-box">
+        <input id="name" class="input" placeholder="Seu nome">
+      </div>
+
+      <div class="search-box">
+        <input id="course" class="input" placeholder="Seu curso">
+        <ul id="courseList" class="autocomplete hidden"></ul>
+      </div>
+
+      <label class="label">Como está o evento?</label>
+      <div id="ratingEvent" class="rating">
+        <span class="emoji">😐</span>
+        <span class="emoji">🙂</span>
+        <span class="emoji">😄</span>
+        <span class="emoji">🤩</span>
+      </div>
+
+      <button id="nextBtn" class="btn primary">Próximo</button>
     </div>
 
-  </div>
-
-  <!-- ================================
-       TELA DO TOTEM
-  ================================= -->
-  <div id="totemPage" class="totem-container hidden">
-
-    <button id="backBtn" class="back-btn">← Voltar</button>
-
-    <div class="totem-card">
-
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Unip_logo.png" 
-           class="card-logo" />
-
-      <h1 class="title">Check-In do Evento</h1>
-
-      <button id="checkinBtn" class="btn primary">Iniciar Check-In</button>
-
-      <div id="form" class="hidden">
-        <input id="name" class="input" placeholder="Seu nome" />
-        <input id="course" class="input" placeholder="Seu curso" />
-
-        <label class="label">Como está o evento?</label>
-        <div id="ratingEvent" class="rating">
-          <span class="emoji">😐</span>
-          <span class="emoji">🙂</span>
-          <span class="emoji">😄</span>
-          <span class="emoji">🤩</span>
-        </div>
-
-        <button id="nextBtn" class="btn primary">Próximo</button>
+    <div id="form2" class="hidden">
+      <label class="label">Quanto você gostou da apresentação?</label>
+      <div id="ratingPresentation" class="rating">
+        <span class="emoji">😐</span>
+        <span class="emoji">🙂</span>
+        <span class="emoji">😄</span>
+        <span class="emoji">🤩</span>
       </div>
 
-      <div id="form2" class="hidden">
-
-        <label class="label">Quanto você gostou da apresentação?</label>
-        <div id="ratingPresentation" class="rating">
-          <span class="emoji">😐</span>
-          <span class="emoji">🙂</span>
-          <span class="emoji">😄</span>
-          <span class="emoji">🤩</span>
-        </div>
-
-        <button id="finalizeBtn" class="btn primary">Finalizar Check-In</button>
-      </div>
-
-      <div id="success" class="hidden success">
-        <div class="emoji-big">🎉</div>
-        <p>Check-In realizado com sucesso!</p>
-      </div>
-
+      <button id="finalizeBtn" class="btn primary">Finalizar</button>
     </div>
 
+    <div id="success" class="hidden success">
+      <div class="emoji-big">🎉</div>
+      <p>Check-In realizado com sucesso!</p>
+    </div>
   </div>
+</div>
 
-  <script src="../js/totem.js"></script>
+<!-- TECLADO VIRTUAL -->
+<div id="keyboard" class="keyboard hidden"></div>
+
+<script src="./js/totem.js"></script>
 </body>
 </html>
