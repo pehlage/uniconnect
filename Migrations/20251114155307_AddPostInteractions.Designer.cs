@@ -11,8 +11,8 @@ using UniConnect.Server.Data;
 namespace UniConnect.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251113190215_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251114155307_AddPostInteractions")]
+    partial class AddPostInteractions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,15 +26,19 @@ namespace UniConnect.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Author")
-                        .IsRequired()
+                    b.Property<string>("Body")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
+                    b.Property<string>("Course")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Emoji")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

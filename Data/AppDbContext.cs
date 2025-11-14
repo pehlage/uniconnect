@@ -8,5 +8,7 @@ namespace UniConnect.Server.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PostInteraction> PostInteractions { get; set; }
+
     }
 }

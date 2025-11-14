@@ -1,0 +1,106 @@
+/* ==========================================================
+   MODAL DE COMENTÁRIOS (PROFISSIONAL)
+   ========================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background: #ffffff;
+  width: 420px;
+  max-width: 90%;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.22);
+  transform: translateY(10px) scale(0.96);
+  opacity: 0;
+  animation: modalAppear .28s ease forwards;
+}
+
+@keyframes modalAppear {
+  from {
+    transform: translateY(20px) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Título */
+.comment-modal h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+/* Lista de comentários */
+#commentList {
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0 0 12px 0;
+  list-style: none;
+}
+
+#commentList li {
+  padding: 6px 0;
+  font-size: 0.95rem;
+  color: var(--accent-600);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Campo de comentário */
+#newComment {
+  width: 100%;
+  height: 70px;
+  resize: none;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  outline: none;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border .2s, box-shadow .2s;
+}
+
+#newComment:focus {
+  border-color: var(--accent-200);
+  box-shadow: 0 0 0 3px rgba(74, 108, 255, 0.25);
+}
+
+/* Botões dentro do modal */
+.comment-modal .actions-row .btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+}
+
+.comment-modal .btn.ghost {
+  background: transparent;
+  border: 2px solid rgba(2,22,80,0.18);
+}
+
+/* Fechar clicando fora */
+.modal-backdrop .modal-card {
+  position: relative;
+}

@@ -1,0 +1,232 @@
+/* ===============================
+   RESET / BASE
+================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Inter", sans-serif;
+  background: #e9f2f7;
+}
+
+/* ===============================
+   TELA DE DESCANSO (LOCKSCREEN)
+================================= */
+.lock-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, #dfeffc, #eef7ff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 120px;
+  transition: transform .6s ease-in-out;
+}
+
+.faculty-logo {
+  width: 170px;
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ai-illustration {
+  width: 280px;
+  position: absolute;
+  bottom: 240px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -22px); }
+  100% { transform: translate(-50%, 0); }
+}
+
+.lock-content {
+  text-align: center;
+  background: rgba(255,255,255,0.45);
+  padding: 25px 32px;
+  border-radius: 22px;
+  backdrop-filter: blur(10px);
+}
+
+.lock-title {
+  color: #002b5c;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.lock-sub {
+  margin-top: 10px;
+  color: #002b5c;
+  font-size: 1rem;
+}
+
+.arrow-up {
+  margin-top: 12px;
+  font-size: 2.4rem;
+  animation: bounce 1.4s infinite;
+  color: #002b5c;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Ocultar ao desbloquear */
+.lock-screen.hide {
+  transform: translateY(-100vh);
+}
+
+/* ===============================
+   TELA DO TOTEM
+================================= */
+
+.totem-container {
+  position: fixed;
+  inset: 0;
+  background: #eef4fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease;
+}
+
+.totem-container.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.back-btn {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  padding: 12px 20px;
+  background: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ===============================
+   CARTÃO
+================================= */
+
+.totem-card {
+  width: 90%;
+  max-width: 430px;
+  background: #fff;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+  animation: rise .4s ease;
+}
+
+@keyframes rise {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.card-logo {
+  width: 150px;
+  display: block;
+  margin: 0 auto 16px auto;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #002b5c;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   FORM
+================================= */
+.input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 14px;
+  border: 1px solid #d6ddea;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.label {
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: #002b5c;
+}
+
+/* ===============================
+   EMOJIS
+================================= */
+.rating {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0 20px;
+}
+
+.emoji {
+  font-size: 2.4rem;
+  opacity: 0.35;
+  cursor: pointer;
+  transition: .15s ease;
+}
+
+.emoji.selected {
+  opacity: 1;
+  transform: scale(1.26);
+}
+
+/* ===============================
+   BOTÕES
+================================= */
+.btn {
+  padding: 16px;
+  width: 100%;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.btn.primary {
+  background: #ffd500;
+  color: #002b5c;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* ===============================
+   SUCESSO
+================================= */
+.success {
+  text-align: center;
+}
+
+.emoji-big {
+  font-size: 4rem;
+  margin-bottom: 10px;
+}
+
+/* UTIL */
+.hidden {
+  display: none;
+}

@@ -1,56 +1,76 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8" />
-  <title>UniConnect — Feed</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-  <link rel="stylesheet" href="/css/style.css" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar-left">
-      <div class="brand">
-        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="logo">
-        <h2>UniConnect</h2>
-      </div>
-      <nav class="nav">
-        <a href="./painel.html" class="nav-link active">🏠 Feed</a>
-        <a href="./create-post.html" class="nav-link">➕ Criar post</a>
-        <a href="./alerts.html" class="nav-link">🚨 Alertas</a>
-        <a href="./events.html" class="nav-link">📅 Eventos</a>
-      </nav>
-      <div class="sidebar-footer">
-        <button id="btnLogin" class="btn small">Entrar</button>
-      </div>
-    </aside>
+  <!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>UniConnect — Feed</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <main class="content">
-      <header class="topbar">
-        <h1>Feed</h1>
-        <div class="search">
-          <input id="searchInput" placeholder="Pesquisar..." />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/layout-sidebar.css" />
+    <link rel="stylesheet" href="./css/comment-modal.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+  </head>
+
+  <body class="page-enter">
+    <div class="app">
+
+      <!-- SIDEBAR ESQUERDA -->
+      <aside class="sidebar-left">
+        <div class="brand">
+          <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="logo">
+          <h2>UniConnect</h2>
         </div>
-      </header>
 
-      <section id="feed" class="feed"></section>
-    </main>
+        <nav class="nav">
+          <a href="./painel.html" class="nav-link active">🏠 Feed</a>
+          <a href="./create-post.html" class="nav-link">➕ Criar post</a>
+          <a href="./alerts.html" class="nav-link">🚨 Alertas</a>
+          <a href="./events.html" class="nav-link">📅 Eventos</a>
+        </nav>
 
-    <aside class="sidebar-right">
-      <div class="users-header">Usuários online</div>
-      <ul id="usersList" class="users-list"></ul>
-    </aside>
-  </div>
+        <div class="sidebar-footer">
+          <button id="btnLogin" class="btn small">Entrar</button>
+        </div>
+      </aside>
 
-  <div id="loginModal" class="modal hidden">
-    <div class="modal-card">
-      <h3>Entrar</h3>
-      <input id="loginName" placeholder="Seu nome" />
-      <button id="loginSubmit" class="btn">Entrar</button>
-      <button id="loginClose" class="btn ghost">Fechar</button>
+      <!-- ÁREA PRINCIPAL -->
+      <main class="content fade-in">
+        <header class="topbar">
+          <h1>Feed</h1>
+          <div class="search">
+            <input id="searchInput" placeholder="Pesquisar..." />
+          </div>
+        </header>
+
+        <section id="feed" class="feed"></section>
+      </main>
+
+      <!-- SIDEBAR DIREITA -->
+      <aside class="sidebar-right">
+        <div class="users-header">Usuários online</div>
+        <ul id="usersList" class="users-list"></ul>
+      </aside>
+
     </div>
-  </div>
 
-  <script src="/js/app.js"></script>
-</body>
-</html>
+    <!-- 🔥 MODAL DE COMENTÁRIOS -->
+    <div id="commentModal" class="modal-backdrop hidden">
+      <div class="modal-card comment-modal">
+        <h3>Comentários</h3>
+
+        <ul id="commentList"></ul>
+
+        <textarea id="newComment" class="material-input" placeholder="Escreva um comentário..."></textarea>
+
+        <div class="actions-row" style="margin-top:12px; display:flex; gap:10px;">
+          <button id="sendComment" class="btn">Enviar</button>
+          <button id="closeCommentModal" class="btn ghost">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="./js/app.js"></script>
+  </body>
+  </html>

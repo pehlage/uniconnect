@@ -4,31 +4,35 @@
   <meta charset="utf-8" />
   <title>UniConnect — Eventos</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
   <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/layout-sidebar.css" />
 </head>
-<body>
+<body class="page-enter">
   <div class="app">
     <aside class="sidebar-left">
       <div class="brand">
         <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="logo">
         <h2>UniConnect</h2>
       </div>
-      <nav class="nav">
+      <nav class="nav" aria-label="menu">
         <a href="./painel.html" class="nav-link">🏠 Feed</a>
         <a href="./create-post.html" class="nav-link">➕ Criar post</a>
         <a href="./alerts.html" class="nav-link">🚨 Alertas</a>
         <a href="./events.html" class="nav-link active">📅 Eventos</a>
       </nav>
       <div class="sidebar-footer">
-        <button id="btnLogin4" class="btn small">Entrar</button>
+        <button id="btnLoginEvents" class="btn small">Entrar</button>
       </div>
     </aside>
 
-    <main class="content">
-      <header class="topbar"><h1>Eventos</h1></header>
+    <main class="content fade-in">
+      <header class="topbar">
+        <h1>Eventos</h1>
+        <div class="search"><input placeholder="Pesquisar eventos..." /></div>
+      </header>
+
       <section class="feed">
-        <div class="card">Nenhum evento cadastrado.</div>
+        <div class="card">Nenhum evento agendado.</div>
       </section>
     </main>
 

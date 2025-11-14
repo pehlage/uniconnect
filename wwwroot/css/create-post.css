@@ -1,121 +1,78 @@
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden; /* remove scroll global */
-      background: var(--bg);
-    }
+/* create-post.css — styles specific to create post page */
 
-    .app {
-      display: flex;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
+:root {
+  --accent-primary: #4a6cff;
+  --shadow-2: 0 8px 25px rgba(2,22,80,0.08);
+  --shadow-3: 0 12px 40px rgba(2,22,80,0.10);
+}
 
-    .content {
-      flex: 1;
-      margin-left: 240px;
-      margin-right: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      overflow-y: auto; /* se o conteúdo for grande, só aqui rola */
-      height: 100vh;
-      box-sizing: border-box;
-    }
+/* Ensure center layout when right sidebar hidden */
+.app.no-right .content {
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding-top:40px;
+  padding-bottom:60px;
+}
 
-    .create-card {
-      max-width: 600px;
-      width: 100%;
-      background: #fff;
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
+/* create card */
+.create-card {
+  width:100%;
+  max-width:760px;
+  background:#fff;
+  border-radius:18px;
+  padding:2rem;
+  box-shadow:var(--shadow-2);
+  display:flex;
+  flex-direction:column;
+  gap:1.2rem;
+  animation: fadeInCard .28s ease-out;
+}
+@keyframes fadeInCard { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
 
-    .create-card h2 {
-      text-align: center;
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-    }
+.create-card h2 { margin:0; color:var(--accent); font-size:1.25rem; }
 
-    .create-card input,
-    .create-card textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid #e5e9f2;
-      font-size: 0.95rem;
-      outline: none;
-      resize: none;
-      background: #f9fbff;
-    }
+/* inputs */
+.material-input {
+  width:100%;
+  padding:12px 14px;
+  border:none;
+  border-bottom:2px solid rgba(2,22,80,0.12);
+  background:transparent;
+  font-size:1rem;
+  outline:none;
+  border-radius:8px;
+  transition:.18s;
+}
+.material-input::placeholder { color: rgba(2,22,80,0.36); }
+.material-input:focus { border-bottom-color: var(--accent-primary); background: rgba(74,108,255,0.04); }
 
-    .create-card textarea {
-      min-height: 150px;
-    }
+/* textarea */
+textarea {
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid rgba(2,22,80,0.06);
+  min-height:150px;
+  background:#fbfcff;
+  transition:.18s;
+}
+textarea:focus { box-shadow: 0 8px 30px rgba(74,108,255,0.08); }
 
-    .row {
-      display: flex;
-      gap: 1rem;
-    }
+/* actions */
+.actions-row { display:flex; justify-content:flex-end; gap:12px; margin-top:6px; }
 
-    .actions-row {
-      justify-content: flex-end;
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
+/* dropdown */
+.dropdown {
+  list-style:none; padding:6px; margin-top:8px;
+  background:#fff; border-radius:12px; box-shadow:var(--shadow-3);
+  position:absolute; width:100%; max-height:220px; overflow-y:auto; display:none; z-index:999;
+}
+.dropdown li { padding:10px 14px; border-radius:8px; cursor:pointer; transition:.12s; }
+.dropdown li:hover { background: rgba(74,108,255,0.06); padding-left:18px; }
 
-    .btn {
-      background: var(--yellow);
-      color: var(--accent);
-      border: none;
-      padding: 10px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .btn.ghost {
-      background: transparent;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 0.85rem;
-      text-align: left;
-    }
-
-    /* Sidebar ajustes */
-    .sidebar-left,
-    .sidebar-right {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      overflow: hidden;
-    }
-
-    .sidebar-right {
-      right: 0;
-    }
-
-    @media (max-width: 960px) {
-      html, body {
-        overflow-y: auto; /* ativa scroll no mobile */
-      }
-      .content {
-        margin: 0;
-        padding: 1.5rem;
-      }
-      .sidebar-right {
-        display: none;
-      }
-    }
+/* small screens */
+@media (max-width:720px) {
+  .create-card { margin:0 12px; padding:1.2rem; max-width:calc(100% - 24px); }
+  .actions-row { justify-content:space-between; }
+}

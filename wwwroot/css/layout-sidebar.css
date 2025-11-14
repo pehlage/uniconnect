@@ -1,0 +1,104 @@
+/* ---------------------------------------------- */
+/* sidebar.css — Sidebar original + FIX DA LINHA  */
+/* ---------------------------------------------- */
+
+.sidebar-left {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: var(--sidebar-left-w);
+  padding: 22px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background: linear-gradient(180deg, rgba(2,43,92,1) 0%, rgba(17,65,138,1) 100%);
+  color: #fff;
+
+  /* ===== FIX DA LINHA ===== */
+  box-shadow: none !important;                 /* remove sombra */
+  border-right: none !important;               /* remove borda */
+  outline: none !important;
+  z-index: 9999 !important;                    /* sempre acima do conteúdo */
+  transform: translateZ(0);                    /* força composição sem fissura */
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand img {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+}
+
+.brand h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* nav */
+.nav {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  color: rgba(255,255,255,0.95);
+
+  transition: background .18s, transform .12s;
+}
+
+.nav-link:hover {
+  background: rgba(255,255,255,0.06);
+  transform: translateX(4px);
+}
+
+.nav-link.active {
+  background: rgba(255,255,255,0.12);
+  font-weight: 600;
+}
+
+/* sidebar footer */
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ===== EXTRA FIX ===== */
+/* remove possíveis pseudo-elementos invisíveis */
+.sidebar-left::before,
+.sidebar-left::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Sidebar direita (apenas visual, mantendo seu funcionamento) */
+.sidebar-right {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  width: var(--sidebar-right-w);
+  background: transparent;
+  padding: 22px;
+  overflow-y: auto;
+  z-index: 30;
+}
