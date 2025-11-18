@@ -30,7 +30,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     user = user ?? "Anônimo";
     text = text ?? "";
 
-    const isCheckin = text.startsWith("Check-in");
+    // NOVA LINHA QUE FAZ CHECKIN VOLTAR A FUNCIONAR
+    const isCheckin = text.startsWith("Check-in") || text.includes("chegou agora!");
 
     // Mantém card animado do totem
     if (isCheckin) {
@@ -205,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   // ==========================================================
-  //  MODAL DE COMENTÁRIOS (VERSÃO FIXA)
+  //  MODAL DE COMENTÁRIOS
   // ==========================================================
   function openCommentModal(postId) {
     const modal = document.getElementById("commentModal");
@@ -214,17 +215,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     modal.classList.add("show");
 
-    // Limpa lista
     list.innerHTML = "";
-
-    // Preenche comentários gravados na memória
     window.postData[postId].comments.forEach(c => {
       list.innerHTML += `<li>• ${c}</li>`;
     });
 
     input.value = "";
 
-    // Enviar novo comentário
     document.getElementById("sendComment").onclick = () => {
       const txt = input.value.trim();
       if (!txt) return;
@@ -234,7 +231,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       input.value = "";
     };
 
-    // Fechar modal
     document.getElementById("closeCommentModal").onclick = () => {
       modal.classList.remove("show");
     };

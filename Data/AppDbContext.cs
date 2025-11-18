@@ -10,5 +10,7 @@ namespace UniConnect.Server.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostInteraction> PostInteractions { get; set; }
 
+        public DbSet<CheckinRecord> Checkins { get; set; }
+
     }
 }

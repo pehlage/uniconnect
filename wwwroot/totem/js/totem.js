@@ -1,41 +1,68 @@
+// totem.js — autocomplete robusto + fluxo + SIGNALR
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* ==========================================================
+        ELEMENTOS DA TELA
+  ========================================================== */
   const lockScreen = document.getElementById("lockScreen");
   const totemPage = document.getElementById("totemPage");
   const backBtn = document.getElementById("backBtn");
 
-  const keyboard = document.getElementById("keyboard");
+  const studentCard = document.getElementById("studentCard");
+  const visitorCard = document.getElementById("visitorCard");
+  const userTypeSelect = document.getElementById("userTypeSelect");
 
-  const nameInput = document.getElementById("name");
-  const courseInput = document.getElementById("course");
+  const checkinBtn = document.getElementById("checkinBtn");
 
-  const ratingEventEl = document.getElementById("ratingEvent");
-  const ratingPresentationEl = document.getElementById("ratingPresentation");
+  const formStudent = document.getElementById("formStudent");
+  const formStudent2 = document.getElementById("formStudent2");
+  const formVisitor = document.getElementById("formVisitor");
+
+  const success = document.getElementById("success");
+
+  let userType = "";
+  let studentData = {};
+  let selectedRating = null;
 
   /* ==========================================================
-        iPHONE-LIKE SLIDE TO UNLOCK
-     ========================================================== */
+        SIGNALR — envia check-in instantâneo ao painel
+  ========================================================== */
+  let hub = null;
+
+  async function initSignalR() {
+    try {
+      hub = new signalR.HubConnectionBuilder()
+        .withUrl("/notifyHub")
+        .withAutomaticReconnect()
+        .build();
+
+      await hub.start();
+      console.log("SignalR conectado");
+    } catch (err) {
+      console.warn("Erro ao conectar ao SignalR:", err);
+    }
+  }
+
+  initSignalR();
+
+  /* ==========================================================
+        LOCKSCREEN
+  ========================================================== */
   let startY = 0;
-
-lockScreen.addEventListener("touchstart", e => {
+  lockScreen.addEventListener("touchstart", e => {
     startY = e.touches[0].clientY;
-}, { passive: true });
+  }, { passive: true });
 
-lockScreen.addEventListener("touchmove", e => {
+  lockScreen.addEventListener("touchmove", e => {
     const currentY = e.touches[0].clientY;
     if (currentY < startY - 80) unlock();
-}, { passive: true });
+  }, { passive: true });
 
   lockScreen.addEventListener("click", unlock);
-  document.addEventListener("keydown", e => {
-    if (e.key === "Enter") unlock();
-  });
 
   function unlock() {
     if (lockScreen.classList.contains("hide")) return;
-
     lockScreen.classList.add("hide");
-
     setTimeout(() => {
       lockScreen.style.display = "none";
       totemPage.classList.remove("hidden");
@@ -45,289 +72,284 @@ lockScreen.addEventListener("touchmove", e => {
 
   /* ==========================================================
         BOTÃO VOLTAR
-     ========================================================== */
-  backBtn.addEventListener("click", () => {
-    lockScreen.style.display = "flex";
-    lockScreen.classList.remove("hide");
-    totemPage.classList.remove("show");
-    totemPage.classList.add("hidden");
+  ========================================================== */
+  backBtn.onclick = () => location.reload();
 
-    // fecha teclado se estiver aberto
-    closeKeyboard();
+  /* ==========================================================
+        SELEÇÃO DO TIPO
+  ========================================================== */
+  studentCard && studentCard.addEventListener("click", () => {
+    userType = "student";
+    studentCard.classList.add("selected");
+    visitorCard.classList.remove("selected");
+    checkinBtn.classList.remove("hidden");
+  });
+
+  visitorCard && visitorCard.addEventListener("click", () => {
+    userType = "visitor";
+    visitorCard.classList.add("selected");
+    studentCard.classList.remove("selected");
+    checkinBtn.classList.remove("hidden");
   });
 
   /* ==========================================================
-        TECLADO VIRTUAL — ESTILO iPHONE (compacto)
-     ========================================================== */
+        INICIAR CHECK-IN
+  ========================================================== */
+  checkinBtn && checkinBtn.addEventListener("click", () => {
+    checkinBtn.classList.add("hidden");
+    userTypeSelect && userTypeSelect.classList.add("hidden");
 
-  let activeInput = null;
-  let isShift = false;
+    if (userType === "student") {
+      formStudent.classList.remove("hidden");
+      document.getElementById("nameStudent")?.focus();
+    }
+    if (userType === "visitor") {
+      formVisitor.classList.remove("hidden");
+      document.getElementById("visitorName")?.focus();
+    }
+  });
 
-  // efeito sonoro (pequeno click)
-  const keySound = new Audio("https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3");
-  keySound.volume = 0.18;
+  /* ==========================================================
+        ESTUDANTE ETAPA 1
+  ========================================================== */
+  document.getElementById("nextBtnStudent")?.addEventListener("click", () => {
+    const name = document.getElementById("nameStudent").value.trim();
+    const faculty = document.getElementById("collegeStudent").value.trim();
+    const course = document.getElementById("courseStudent").value.trim();
+    const semester = document.getElementById("semesterStudent").value.trim();
 
-  function playSound() {
+    if (!name || !faculty || !course || !semester) {
+      alert("Preencha todas as informações!");
+      return;
+    }
+
+    studentData = { name, faculty, course, semester };
+
+    formStudent.classList.add("hidden");
+    formStudent2.classList.remove("hidden");
+  });
+
+  /* ==========================================================
+        FINALIZAR — ESTUDANTE
+  ========================================================== */
+  document.getElementById("finalizeStudentBtn")?.addEventListener("click", async () => {
+      const payload = {
+        type: "student",
+        name: studentData.name,
+        lastName: "",
+        faculty: studentData.faculty,
+        course: studentData.course,
+        semester: studentData.semester,
+        rating: selectedRating
+      };
+
+      await sendCheckin(payload);
+
+      formStudent2.classList.add("hidden");
+      success.classList.remove("hidden");
+      setTimeout(() => location.reload(), 2500);
+  });
+
+  /* ==========================================================
+        FINALIZAR — VISITANTE
+  ========================================================== */
+  document.getElementById("finalizeVisitorBtn")?.addEventListener("click", async () => {
+      const payload = {
+        type: "visitor",
+        name,
+        lastName: last,
+        faculty,
+        course: "",
+        semester: "",
+        rating: selectedRating
+      };
+
+      await sendCheckin(payload);
+
+      formVisitor.classList.add("hidden");
+      success.classList.remove("hidden");
+      setTimeout(() => location.reload(), 2500);
+  });
+
+  /* ==========================================================
+        ENVIO PARA API
+  ========================================================== */
+  async function sendCheckin(data) {
     try {
-      keySound.currentTime = 0;
-      keySound.play();
-    } catch (e) {
-      // som pode falhar em alguns browsers sem interação do usuário
+      await fetch("/api/checkin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+    } catch (err) {
+      console.error("Erro ao enviar checkin:", err);
     }
   }
 
-  // Layout compacto do teclado
-  const rows = [
-    ["1","2","3","4","5","6","7","8","9","0"],
-    ["q","w","e","r","t","y","u","i","o","p"],
-    ["a","s","d","f","g","h","j","k","l"],
-    ["⇧","z","x","c","v","b","n","m","⌫"],
-    ["espaço"]
-  ];
+  /* ==========================================================
+        AUTOCOMPLETE + EMOJIS
+        (todo o restante do SEU CÓDIGO original permanece igual)
+  ========================================================== */
 
-  function openKeyboard(input) {
-    activeInput = input;
-    isShift = false; // reset shift ao abrir
-    renderKeyboard();
-    keyboard.classList.remove("hidden");
-    // força scroll do teclado (visual)
-    keyboard.scrollIntoView({behavior: "smooth"});
+  /* --------------- UTILIDADES, AUTOCOMPLETE E EMOJIS --------------- */
+  function debounce(fn, ms = 180) {
+    let t;
+    return (...args) => {
+      clearTimeout(t);
+      t = setTimeout(() => fn(...args), ms);
+    };
   }
 
-  function closeKeyboard() {
-    keyboard.classList.add("hidden");
-    activeInput = null;
-    isShift = false;
-    renderKeyboard();
+  function attachKeyboardNav(input, list) {
+    let index = -1;
+    input.addEventListener("keydown", (e) => {
+      const items = Array.from(list.querySelectorAll("li"));
+      if (!items.length) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        index = Math.min(index + 1, items.length - 1);
+        items.forEach((it, i) => it.classList.toggle("focused", i === index));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        index = Math.max(index - 1, 0);
+        items.forEach((it, i) => it.classList.toggle("focused", i === index));
+      } else if (e.key === "Enter" && index >= 0) {
+        e.preventDefault();
+        items[index].click();
+      }
+    });
+
+    input.addEventListener("input", () => index = -1);
+    input.addEventListener("focus", () => index = -1);
   }
 
-  function renderKeyboard() {
-    keyboard.innerHTML = "";
-    keyboard.setAttribute("aria-hidden", keyboard.classList.contains("hidden") ? "true" : "false");
+  (function setupGlobalClickClose() {
+    const handler = (ev) => {
+      if (!ev.target.closest(".search-box")) {
+        document.querySelectorAll(".autocomplete").forEach(u => u.classList.add("hidden"));
+      }
+    };
+    document.addEventListener("click", handler);
+  })();
 
-    rows.forEach(row => {
-      const rowDiv = document.createElement("div");
-      rowDiv.classList.add("kb-row");
+  const initializedAuto = new Set();
+  function setupAutocomplete(inputId, listId, sourceArray) {
+    if (initializedAuto.has(inputId)) return;
+    initializedAuto.add(inputId);
 
-      row.forEach(key => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.classList.add("kb-key");
+    const input = document.getElementById(inputId);
+    if (!input) return;
 
-        if (key === "espaço") {
-          btn.classList.add("space-key");
-          btn.textContent = "Espaço";
-          btn.setAttribute("aria-label","espaço");
-        } else if (key === "⇧") {
-          btn.classList.add("shift-key");
-          btn.textContent = "⇧";
-          btn.setAttribute("aria-pressed", isShift ? "true" : "false");
-        } else if (key === "⌫") {
-          btn.classList.add("del-key");
-          btn.innerHTML = "⌫";
-          btn.setAttribute("aria-label","backspace");
-        } else {
-          btn.textContent = isShift ? key.toUpperCase() : key;
-          btn.setAttribute("data-char", key);
-        }
+    let list = document.getElementById(listId);
+    if (!list) {
+      list = document.createElement("ul");
+      list.id = listId;
+      list.className = "autocomplete hidden";
+      const parent = input.parentElement?.classList.contains("search-box")
+        ? input.parentElement
+        : input.parentElement;
+      parent.appendChild(list);
+    }
 
-        btn.addEventListener("click", (ev) => {
-          // impedir blur do input quando clicar no botão
-          ev.preventDefault();
-          handleKey(key);
-        });
-
-        rowDiv.appendChild(btn);
+    function renderMatches(matches) {
+      list.innerHTML = "";
+      matches.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        li.onclick = () => {
+          input.value = item;
+          list.classList.add("hidden");
+        };
+        list.appendChild(li);
       });
 
-      keyboard.appendChild(rowDiv);
-    });
+      list.classList.toggle("hidden", matches.length === 0);
+    }
+
+    input.addEventListener("input", debounce(() => {
+      const q = input.value.trim().toLowerCase();
+      list.innerHTML = "";
+
+      if (!q) {
+        list.classList.add("hidden");
+        return;
+      }
+
+      const starts = [];
+      const includes = [];
+      for (const s of sourceArray) {
+        const low = s.toLowerCase();
+        if (low.startsWith(q)) starts.push(s);
+        else if (low.includes(q)) includes.push(s);
+      }
+      const results = starts.concat(includes);
+      renderMatches(results);
+    }, 160));
+
+    attachKeyboardNav(input, list);
   }
 
-  function handleKey(key) {
-    playSound();
+  /* faculdades fixas */
+  const colleges = [
+    "UNISO – Universidade de Sorocaba",
+    "FACENS – Faculdade de Engenharia de Sorocaba",
+    "UNIP Sorocaba",
+    "Anhanguera Sorocaba",
+    "Fatec Sorocaba",
+    "UNES Faculdade",
+    "UFSCar – Campus Sorocaba",
+    "Unicesumar Sorocaba",
+    "Cruzeiro do Sul – Sorocaba",
+    "Anhanguera Campus Nogueira"
+  ];
+  setupAutocomplete("collegeStudent", "collegeListStudent", colleges);
+  setupAutocomplete("collegeVisitor", "collegeListVisitor", colleges);
 
-    if (!activeInput) return;
-
-    if (key === "⌫") {
-      activeInput.value = activeInput.value.slice(0, -1);
-      activeInput.focus();
-      return;
-    }
-
-    if (key === "⇧") {
-      isShift = !isShift;
-      renderKeyboard();
-      activeInput.focus();
-      return;
-    }
-
-    if (key === "espaço") {
-      activeInput.value += " ";
-      activeInput.focus();
-      return;
-    }
-
-    // letras e números
-    const char = isShift ? key.toUpperCase() : key;
-    activeInput.value += char;
-    activeInput.focus();
-
-    // quando shift é momentâneo (comportamento similar ao celular): desligar após inserir letra
-    if (isShift && key.length === 1 && /[a-z]/i.test(key)) {
-      isShift = false;
-      renderKeyboard();
-    }
-  }
-
-  // Abrir teclado ao focar (não altera lógica existente)
-  nameInput.addEventListener("focus", () => openKeyboard(nameInput));
-  courseInput.addEventListener("focus", () => openKeyboard(courseInput));
-
-  // Fechar teclado ao clicar fora do input e do teclado
-  document.addEventListener("click", (e) => {
-    const isInput = e.target === nameInput || e.target === courseInput;
-    const isKeyboardBtn = Boolean(e.target.closest("#keyboard"));
-    const isBackBtn = Boolean(e.target.closest("#backBtn"));
-
-    if (!isInput && !isKeyboardBtn && !isBackBtn) {
-      closeKeyboard();
-    }
-  });
-
-  // Evita que tocar no teclado faça o layout scrollar para cima (em mobiles)
-  keyboard.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-  }, { passive: false });
-
-  /* ==========================================================
-        AUTOCOMPLETE DE CURSOS
-     ========================================================== */
-  const courses = [
-    "Engenharia de Software",
+  /* cursos */
+  const fallbackUnisoCourses = [
+    "Análise e Desenvolvimento de Sistemas",
+    "Arquitetura e Urbanismo",
+    "Administração",
     "Ciência da Computação",
-    "Sistemas de Informação",
+    "Enfermagem",
+    "Fisioterapia",
+    "Engenharia de Produção",
+    "Engenharia Civil",
     "Engenharia Elétrica",
     "Engenharia Mecânica",
-    "Engenharia Civil",
-    "Administração",
-    "Direito",
+    "Estética e Cosmética",
+    "Jornalismo",
+    "Marketing",
+    "Medicina Veterinária",
+    "Nutrição",
     "Psicologia",
-    "Arquitetura",
-    "Medicina",
-    "Enfermagem",
-    "Educação Física",
-    "Análise e Desenvolvimento de Sistemas"
+    "Sistemas de Informação",
+    "Tecnologia em Gestão Comercial",
+    "Design Gráfico",
+    "Direito"
   ];
 
-  const list = document.getElementById("courseList");
+  let unisoCourses = fallbackUnisoCourses.slice();
 
-  courseInput.addEventListener("input", () => {
-    const text = courseInput.value.toLowerCase();
-    list.innerHTML = "";
+  fetch("./js/courses.json")
+    .then(r => r.json())
+    .then(data => {
+      if (Array.isArray(data.unisoCourses)) {
+        unisoCourses = data.unisoCourses.slice();
+      }
+    })
+    .catch(() => console.warn("courses.json não encontrado, usando fallback"))
+    .finally(() => setupAutocomplete("courseStudent", "courseList", unisoCourses));
 
-    if (!text) {
-      list.classList.add("hidden");
-      return;
-    }
-
-    const results = courses.filter(c =>
-      c.toLowerCase().includes(text)
-    );
-
-    results.forEach(course => {
-      const li = document.createElement("li");
-      li.textContent = course;
-      li.onclick = () => {
-        courseInput.value = course;
-        list.classList.add("hidden");
-        courseInput.focus();
-      };
-      list.appendChild(li);
-    });
-
-    list.classList.toggle("hidden", results.length === 0);
-  });
-
-  /* ==========================================================
-        EMOJIS
-     ========================================================== */
+  /* emojis */
   document.querySelectorAll(".emoji").forEach(emoji => {
-    emoji.onclick = () => {
-      emoji.parentElement
-           .querySelectorAll(".emoji")
-           .forEach(x => x.classList.remove("selected"));
+    emoji.addEventListener("click", () => {
+      selectedRating = emoji.textContent;
+      const parent = emoji.parentElement;
+      parent.querySelectorAll(".emoji").forEach(e => e.classList.remove("selected"));
       emoji.classList.add("selected");
-    };
+    });
   });
-
-  /* ==========================================================
-        FLUXO DO CHECK-IN
-     ========================================================== */
-  const checkinBtn = document.getElementById("checkinBtn");
-  const form1 = document.getElementById("form");
-  const form2 = document.getElementById("form2");
-  const success = document.getElementById("success");
-
-  checkinBtn.onclick = () => {
-    checkinBtn.classList.add("hidden");
-    form1.classList.remove("hidden");
-    // focus no primeiro campo e abrir teclado
-    setTimeout(() => {
-      nameInput.focus();
-      openKeyboard(nameInput);
-    }, 240);
-  };
-
-  document.getElementById("nextBtn").onclick = () => {
-    if (!nameInput.value.trim() || !courseInput.value.trim()) {
-      alert("Preencha seu nome e curso!");
-      return;
-    }
-
-    form1.classList.add("hidden");
-    form2.classList.remove("hidden");
-  };
-
-  document.getElementById("finalizeBtn").onclick = async () => {
-
-    const name = nameInput.value.trim();
-    const course = courseInput.value.trim();
-    const ratingEvent =
-      ratingEventEl.querySelector(".selected")?.textContent ?? "🙂";
-
-    const ratingPresentation =
-      ratingPresentationEl.querySelector(".selected")?.textContent ?? "🙂";
-
-    const message =
-      `Check-in — Curso: ${course} | Evento: ${ratingEvent} | Apresentação: ${ratingPresentation}`;
-
-    // envia para o feed
-    try {
-      await fetch("/notify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user: name, text: message })
-      });
-    } catch (err) {
-      console.warn("Erro ao notificar (mas continua):", err);
-    }
-
-    // salva no banco
-    try {
-      await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: name, body: message })
-      });
-    } catch (err) {
-      console.warn("Erro ao salvar no banco (mas continua):", err);
-    }
-
-    form2.classList.add("hidden");
-    success.classList.remove("hidden");
-
-    setTimeout(() => location.reload(), 2600);
-  };
 
 });

@@ -11,44 +11,72 @@
 <body>
 
 <!-- =====================================================
-    TELA DE DESCANSO (LOCKSCREEN iPhone)
+    TELA DE DESCANSO (iOS Lock Screen Style)
 ===================================================== -->
 <div id="lockScreen" class="lock-screen">
 
-  <!-- Poster do Evento -->
   <img src="./assets/evento.jpg" class="event-poster" />
 
   <div class="lock-overlay">
-    <h1 class="lock-title">Feira de Projetos</h1>
-    <p class="lock-sub">Deslize para cima<br>ou pressione Enter</p>
-    <div class="arrow-up">⬆</div>
+    <h1 class="lock-title">Projeto Integrador</h1>
+    <p class="lock-sub">Toque em qualquer lugar da tela</p>
+
+    <div class="touch-icon" aria-hidden="true">
+      <div class="tap-circle">
+          <div class="tap-inner"></div>
+      </div>
+    </div>
   </div>
+
 </div>
 
-
 <!-- =====================================================
-    TELA DO TOTEM
+    TELA DO TOTEM (Apple Glass Card)
 ===================================================== -->
 <div id="totemPage" class="totem-container hidden">
 
   <button id="backBtn" class="back-btn">←</button>
 
   <div class="totem-card">
-    <h1 class="title">Check-In do Evento</h1>
 
-    <button id="checkinBtn" class="btn primary">Iniciar Check-In</button>
+    <h1 class="title">Projeto Integrador</h1>
 
-    <div id="form" class="hidden">
-      <div class="search-box">
-        <input id="name" class="input" placeholder="Seu nome">
+    <!-- Seleção Premium -->
+    <div id="userTypeSelect" class="card-select">
+
+      <div id="studentCard" class="select-card">
+        <div class="icon">👨‍🎓</div>
+        <div class="label">Sou Estudante</div>
       </div>
 
+      <div id="visitorCard" class="select-card">
+        <div class="icon">🧑‍💼</div>
+        <div class="label">Sou Visitante</div>
+      </div>
+
+    </div>
+
+    <!-- Botão aparece somente após escolha -->
+    <button id="checkinBtn" class="btn primary hidden">Iniciar Check-In</button>
+
+    <!-- FORM ESTUDANTE -->
+    <div id="formStudent" class="hidden form-block">
+
+      <input id="nameStudent" class="input" placeholder="Seu nome">
+
       <div class="search-box">
-        <input id="course" class="input" placeholder="Seu curso">
+        <input id="courseStudent" class="input" placeholder="Seu curso">
         <ul id="courseList" class="autocomplete hidden"></ul>
       </div>
 
-      <label class="label">Como está o evento?</label>
+      <div class="search-box">
+        <input id="collegeStudent" class="input" placeholder="Sua faculdade">
+        <ul id="collegeListStudent" class="autocomplete hidden"></ul>
+      </div>
+
+      <input id="semesterStudent" class="input" placeholder="Seu semestre (ex: 3)">
+
+      <label class="label">O que está achando do evento?</label>
       <div id="ratingEvent" class="rating">
         <span class="emoji">😐</span>
         <span class="emoji">🙂</span>
@@ -56,11 +84,30 @@
         <span class="emoji">🤩</span>
       </div>
 
-      <button id="nextBtn" class="btn primary">Próximo</button>
+      <button id="nextBtnStudent" class="btn primary">Próximo</button>
     </div>
 
-    <div id="form2" class="hidden">
-      <label class="label">Quanto você gostou da apresentação?</label>
+    <!-- FORM VISITANTE -->
+    <div id="formVisitor" class="hidden form-block">
+
+      <input id="visitorName" class="input" placeholder="Nome">
+      <input id="visitorLastName" class="input" placeholder="Sobrenome">
+
+      <label class="label">O que está achando do evento?</label>
+      <div id="ratingEventVisitor" class="rating">
+        <span class="emoji">😐</span>
+        <span class="emoji">🙂</span>
+        <span class="emoji">😄</span>
+        <span class="emoji">🤩</span>
+      </div>
+
+      <button id="finalizeVisitorBtn" class="btn primary">Finalizar</button>
+    </div>
+
+    <!-- FORM ESTUDANTE — ETAPA 2 -->
+    <div id="formStudent2" class="hidden form-block">
+      <label class="label">Avaliação da apresentação</label>
+
       <div id="ratingPresentation" class="rating">
         <span class="emoji">😐</span>
         <span class="emoji">🙂</span>
@@ -68,19 +115,22 @@
         <span class="emoji">🤩</span>
       </div>
 
-      <button id="finalizeBtn" class="btn primary">Finalizar</button>
+      <button id="finalizeStudentBtn" class="btn primary">Finalizar</button>
     </div>
 
+    <!-- SUCESSO -->
     <div id="success" class="hidden success">
-      <div class="emoji-big">🎉</div>
-      <p>Check-In realizado com sucesso!</p>
+      <svg viewBox="0 0 48 48" width="70" height="70">
+        <circle cx="24" cy="24" r="22" fill="#18c96e"/>
+        <path d="M14 24l6 6 14-14" stroke="white" stroke-width="5"
+              stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </svg>
     </div>
+
   </div>
 </div>
 
-<!-- TECLADO VIRTUAL -->
-<div id="keyboard" class="keyboard hidden"></div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script src="./js/totem.js"></script>
 </body>
 </html>
