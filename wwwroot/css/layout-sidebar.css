@@ -1,5 +1,5 @@
 /* ---------------------------------------------- */
-/* sidebar.css — Sidebar original + FIX DA LINHA  */
+/* sidebar.css — Sidebar original + FIX + RESPONSIVO */
 /* ---------------------------------------------- */
 
 .sidebar-left {
@@ -18,13 +18,17 @@
   background: linear-gradient(180deg, rgba(2,43,92,1) 0%, rgba(17,65,138,1) 100%);
   color: #fff;
 
-  /* ===== FIX DA LINHA ===== */
-  box-shadow: none !important;                 /* remove sombra */
-  border-right: none !important;               /* remove borda */
+  box-shadow: none !important;
+  border-right: none !important;
   outline: none !important;
-  z-index: 9999 !important;                    /* sempre acima do conteúdo */
-  transform: translateZ(0);                    /* força composição sem fissura */
+
+  z-index: 9999 !important;
+  transform: translateZ(0);
 }
+
+/* -----------------------------------------------------
+   LOGO / MARCA
+------------------------------------------------------ */
 
 .brand {
   display: flex;
@@ -39,12 +43,14 @@
 }
 
 .brand h2 {
-  margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
 }
 
-/* nav */
+/* -----------------------------------------------------
+   NAVEGAÇÃO
+------------------------------------------------------ */
+
 .nav {
   margin-top: 18px;
   display: flex;
@@ -56,11 +62,25 @@
   display: flex;
   align-items: center;
   gap: 10px;
+
   padding: 10px;
   border-radius: 12px;
-  color: rgba(255,255,255,0.95);
 
+  color: rgba(255,255,255,0.95);
   transition: background .18s, transform .12s;
+
+  /* 🔥 Correção para remover linhas/riscos */
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.nav-link * {
+  /* 🔥 Garante que ícone e texto não tenham underline */
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
 }
 
 .nav-link:hover {
@@ -73,23 +93,28 @@
   font-weight: 600;
 }
 
-/* sidebar footer */
+
+/* -----------------------------------------------------
+   FOOTER
+------------------------------------------------------ */
+
 .sidebar-footer {
   margin-top: auto;
   display: flex;
   gap: 10px;
-  align-items: center;
 }
 
-/* ===== EXTRA FIX ===== */
-/* remove possíveis pseudo-elementos invisíveis */
+/* Remove possíveis pseudo-elementos */
 .sidebar-left::before,
 .sidebar-left::after {
   content: none !important;
   display: none !important;
 }
 
-/* Sidebar direita (apenas visual, mantendo seu funcionamento) */
+/* -----------------------------------------------------
+   SIDEBAR DIREITA
+------------------------------------------------------ */
+
 .sidebar-right {
   position: fixed;
   right: 0;
@@ -101,4 +126,117 @@
   padding: 22px;
   overflow-y: auto;
   z-index: 30;
+}
+
+/* -----------------------------------------------------
+   RESPONSIVIDADE — TABLETS E CELULARES
+------------------------------------------------------ */
+
+/* ===== Tablets ===== */
+@media (max-width: 1024px) {
+
+  .sidebar-right {
+    display: none;
+  }
+
+  .content {
+    margin-right: 0 !important;
+  }
+}
+
+/* ===== Celulares ===== */
+@media (max-width: 768px) {
+
+  /* Sidebar recolhida */
+  .sidebar-left {
+    left: -260px;
+    transition: left .25s ease;
+  }
+
+  /* Sidebar aberta */
+  .sidebar-left.open {
+    left: 0;
+  }
+
+  /* Botão flutuante hamburguer */
+  #mobileMenuToggle {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 99999;
+
+    width: 44px;
+    height: 44px;
+
+    background: rgba(255,255,255,0.85);
+    border-radius: 14px;
+    border: 1px solid rgba(0,0,0,0.06);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.6rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+
+    cursor: pointer;
+  }
+
+  /* Remove margens laterais do conteúdo */
+  .content {
+    margin-left: 0 !important;
+    padding: 18px;
+  }
+
+  /* Remove sidebar direita */
+  .sidebar-right {
+    display: none;
+  }
+
+  /* Expande o feed */
+  .feed {
+    padding-bottom: 100px;
+  }
+
+  /* ===== Ajuste para o botão NÃO ficar sobre o feed ===== */
+
+  .topbar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-left: 64px !important; /* desloca para direita do botão */
+    margin-top: 8px;
+  }
+
+  .topbar .search input {
+    width: 100%;
+    max-width: none !important;
+  }
+
+  .feed {
+    margin-left: 64px !important;
+  }
+}
+
+/* ===== Celulares muito pequenos ===== */
+@media (max-width: 420px) {
+
+  .content {
+    padding: 12px;
+  }
+
+  #mobileMenuToggle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+
+  .topbar {
+    margin-left: 54px !important;
+  }
+
+  .feed {
+    margin-left: 54px !important;
+  }
 }

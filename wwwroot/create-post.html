@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./css/layout-sidebar.css" />
 </head>
 <body class="page-enter">
+  <div id="mobileMenuToggle">☰</div>
   <div class="app no-right">
     <aside class="sidebar-left">
       <div class="brand">
@@ -48,5 +49,13 @@
 
   <script src="./js/app.js"></script>
   <script src="./js/create-post.js"></script>
+  <script>
+    const btn = document.getElementById("mobileMenuToggle");
+    const left = document.querySelector(".sidebar-left");
+
+    btn.addEventListener("click", () => {
+      left.classList.toggle("open");
+    });
+  </script>
 </body>
 </html>

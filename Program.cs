@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
 using UniConnect.Server.Data;
 using UniConnect.Server.Models;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,11 +32,41 @@ var app = builder.Build();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://*:{port}");
 
-// Middleware estático
 app.UseCors();
-app.UseStaticFiles();
 
-// ✅ Define painel.html como página padrão (substitui index.html)
+
+// ---------------------------------------------------
+// ✅ DURANTE O DESENVOLVIMENTO: arquivos sempre do /wwwroot real + sem cache
+// ---------------------------------------------------
+if (app.Environment.IsDevelopment())
+{
+    Console.WriteLine("🔧 Development mode: Static files reloading enabled!");
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")
+        ),
+        ServeUnknownFileTypes = true,
+        OnPrepareResponse = ctx =>
+        {
+            // Força navegador a sempre pegar o arquivo mais novo
+            ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            ctx.Context.Response.Headers["Pragma"] = "no-cache";
+            ctx.Context.Response.Headers["Expires"] = "-1";
+        }
+    });
+}
+else
+{
+    // Produção normal
+    app.UseStaticFiles();
+}
+
+
+// ---------------------------------------------------
+// 🔁 Redirecionamento padrão: painel.html como homepage
+// ---------------------------------------------------
 app.Use(async (context, next) =>
 {
     if (context.Request.Path == "/" || context.Request.Path == "/index.html")
@@ -44,6 +76,7 @@ app.Use(async (context, next) =>
     }
     await next();
 });
+
 
 app.MapControllers();
 app.MapHub<NotifyHub>("/notifyHub");
@@ -61,7 +94,10 @@ app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
     return Results.Ok();
 });
 
-// ✅ Inicializa banco e aplica migrações com segurança
+
+// ---------------------------------------------------
+// 🔧 Banco de dados: cria + executa migrações se necessário
+// ---------------------------------------------------
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -89,7 +125,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 builder.WebHost.UseShutdownTimeout(TimeSpan.FromSeconds(10));
-
 app.Run();
 
 public record Message(string User, string Text);
