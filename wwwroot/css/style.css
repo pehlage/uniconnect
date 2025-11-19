@@ -159,39 +159,98 @@ html, body {
 }
 
 .checkin-card {
-  background: linear-gradient(135deg, #e9f2ff, #ffffff);
-  border-left: 6px solid var(--accent-200);
-  border-radius: var(--r-lg);
-  padding: 18px;
-  border: 1px solid rgba(2,22,80,0.10);
-  animation: checkin-enter .45s ease-out;
-  box-shadow: var(--shadow-2);
+    background: linear-gradient(135deg, #eef7ff, #f8fbff);
+    border-radius: 18px;
+    padding: 18px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.05);
+    animation: fadeInUp 0.35s ease;
 }
 
 .checkin-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
 }
 
-.checkin-icon {
-  font-size: 1.7rem;
+.checkin-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #3b82f6;
+    border: 2px solid #3b82f6;
 }
 
-.checkin-tag {
-  background: var(--accent-200);
-  color: white;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 700;
+.checkin-avatar.visitor {
+    background: linear-gradient(45deg, #5a8dee, #8ab6ff);
+    border: 2px solid white;
+}
+.tag-blue {
+    background: #dce9ff;
+    color: #2b5bbf;
+}
+.checkin-user-info strong {
+    font-size: 16px;
+    color: #1e293b;
+}
+.checkin-user-info small {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
 }
 
-.checkin-text {
-  line-height: 1.55;
-  white-space: pre-line;
+.checkin-body {
+    margin: 10px 0;
+    font-size: 15px;
+    color: #334155;
 }
+
+.checkin-meta {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #475569;
+    border-left: 3px solid #3b82f6;
+}
+
+.checkin-meta .label {
+    font-weight: bold;
+    color: #1e40af;
+}
+
+.checkin-footer {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+}
+
+.tag-pill {
+    padding: 6px 12px;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.tag-green {
+    background: #dcfce7;
+    color: #15803d;
+}
+.tag-rating {
+    background: #fff7c2;
+    color: #b45309;
+}
+
 
 /* --------------------------------------------------
    USERS ONLINE (SIDEBAR DIREITA)

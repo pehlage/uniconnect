@@ -133,7 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
         FINALIZAR — ESTUDANTE
   ========================================================== */
   document.getElementById("finalizeStudentBtn")?.addEventListener("click", async () => {
-      const payload = {
+
+    const payload = {
         type: "student",
         name: studentData.name,
         lastName: "",
@@ -141,50 +142,71 @@ document.addEventListener("DOMContentLoaded", () => {
         course: studentData.course,
         semester: studentData.semester,
         rating: selectedRating
-      };
+    };
 
-      await sendCheckin(payload);
+    await sendCheckin(payload);
 
-      formStudent2.classList.add("hidden");
-      success.classList.remove("hidden");
-      setTimeout(() => location.reload(), 2500);
+    formStudent2.classList.add("hidden");
+    success.classList.remove("hidden");
+    setTimeout(() => location.reload(), 2500);
   });
+
 
   /* ==========================================================
         FINALIZAR — VISITANTE
   ========================================================== */
   document.getElementById("finalizeVisitorBtn")?.addEventListener("click", async () => {
-      const payload = {
+
+    const name = document.getElementById("visitorName")?.value.trim();
+    const last = document.getElementById("visitorLastName")?.value.trim();
+
+    if (!name || !last) {
+        alert("Preencha nome e sobrenome!");
+        return;
+    }
+
+    const payload = {
         type: "visitor",
         name,
         lastName: last,
-        faculty,
+        faculty: "",
         course: "",
         semester: "",
         rating: selectedRating
-      };
+    };
 
-      await sendCheckin(payload);
+    await sendCheckin(payload);
 
-      formVisitor.classList.add("hidden");
-      success.classList.remove("hidden");
-      setTimeout(() => location.reload(), 2500);
+    formVisitor.classList.add("hidden");
+    success.classList.remove("hidden");
+    setTimeout(() => location.reload(), 2500);
   });
 
   /* ==========================================================
-        ENVIO PARA API
+   FUNÇÃO REUTILIZÁVEL — Envio ao banco + SignalR
   ========================================================== */
-  async function sendCheckin(data) {
-    try {
-      await fetch("/api/checkin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-    } catch (err) {
-      console.error("Erro ao enviar checkin:", err);
-    }
+  async function sendCheckin(payload) {
+      try {
+          // 1. Salvar no banco
+          await fetch("/api/checkins", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+          });
+
+          // 2. Enviar ao painel via SignalR
+          if (hub) {
+              const msgText =
+                  `Check-in: ${payload.type} — ${payload.name} chegou agora! (Projeto Integrador)`;
+                
+              await hub.invoke("SendMessage", payload.name, msgText);
+          }
+
+      } catch (err) {
+          console.error("Erro ao enviar check-in:", err);
+      }
   }
+
 
   /* ==========================================================
         AUTOCOMPLETE + EMOJIS

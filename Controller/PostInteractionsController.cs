@@ -1,40 +1,46 @@
 using Microsoft.AspNetCore.Mvc;
-using UniConnect.Server.Data;
-using UniConnect.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using UniConnect.Server.Data;
+using UniConnect.Server.Dtos;
+using UniConnect.Server.Models;
 
 namespace UniConnect.Server.Controllers
 {
-    [Route("api/interactions")]
     [ApiController]
+    [Route("api/[controller]")]
     public class PostInteractionsController : ControllerBase
     {
         private readonly AppDbContext _db;
+        public PostInteractionsController(AppDbContext db) => _db = db;
 
-        public PostInteractionsController(AppDbContext db)
+        [HttpGet("post/{postId:int}")]
+        public async Task<IActionResult> GetByPost(int postId)
         {
-            _db = db;
-        }
-
-        // GET: api/interactions/{postId}
-        [HttpGet("{postId}")]
-        public async Task<IActionResult> GetInteractions(int postId)
-        {
-            var interactions = await _db.PostInteractions
-                .Where(i => i.PostId == postId)
-                .OrderBy(i => i.CreatedAt)
+            var list = await _db.PostInteractions
+                .Where(pi => pi.PostId == postId)
+                .OrderByDescending(pi => pi.CreatedAt)
                 .ToListAsync();
-
-            return Ok(interactions);
+            return Ok(list);
         }
 
-        // POST: api/interactions
         [HttpPost]
-        public async Task<IActionResult> AddInteraction([FromBody] PostInteraction interaction)
+        public async Task<IActionResult> Create([FromBody] CreatePostInteractionDto dto)
         {
-            _db.PostInteractions.Add(interaction);
+            // optional: verify if post exists
+            var exists = await _db.Posts.AnyAsync(p => p.Id == dto.PostId);
+            if (!exists) return BadRequest("Post does not exist.");
+
+            var pi = new PostInteraction
+            {
+                PostId = dto.PostId,
+                User = dto.User ?? "",
+                Type = dto.Type ?? "",
+                Value = dto.Value
+            };
+
+            _db.PostInteractions.Add(pi);
             await _db.SaveChangesAsync();
-            return Ok(interaction);
+            return CreatedAtAction(nameof(GetByPost), new { postId = pi.PostId }, pi);
         }
     }
 }

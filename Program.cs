@@ -4,54 +4,54 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Configuration;
 using UniConnect.Server.Data;
 using UniConnect.Server.Models;
-using System.IO;
+using UniConnect.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Banco SQLite
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Configurar host timeout ANTES do Build
+builder.WebHost.UseShutdownTimeout(TimeSpan.FromSeconds(10));
 
-// CORS + SignalR + Controllers
+// Carrega a connection string
+var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Configura EF + SQL Server Express remoto
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(conn,
+        sql => sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null));
+});
+
+// CORS liberado (frontend local e clientes remotos)
 builder.Services.AddCors(o =>
 {
     o.AddDefaultPolicy(p => p
+        .AllowAnyOrigin()
         .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowAnyOrigin());
+        .AllowAnyMethod());
 });
+
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Porta dinâmica (Render)
+// Define porta dinâmica (Render, Railway, VPS etc.)
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://*:{port}");
 
 app.UseCors();
 
-
-// ---------------------------------------------------
-// ✅ DURANTE O DESENVOLVIMENTO: arquivos sempre do /wwwroot real + sem cache
-// ---------------------------------------------------
+// Static files
 if (app.Environment.IsDevelopment())
 {
-    Console.WriteLine("🔧 Development mode: Static files reloading enabled!");
-
     app.UseStaticFiles(new StaticFileOptions
     {
-        FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")
-        ),
-        ServeUnknownFileTypes = true,
         OnPrepareResponse = ctx =>
         {
-            // Força navegador a sempre pegar o arquivo mais novo
-            ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            ctx.Context.Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
             ctx.Context.Response.Headers["Pragma"] = "no-cache";
             ctx.Context.Response.Headers["Expires"] = "-1";
         }
@@ -59,14 +59,10 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    // Produção normal
     app.UseStaticFiles();
 }
 
-
-// ---------------------------------------------------
-// 🔁 Redirecionamento padrão: painel.html como homepage
-// ---------------------------------------------------
+// Redireciona página padrão → painel.html
 app.Use(async (context, next) =>
 {
     if (context.Request.Path == "/" || context.Request.Path == "/index.html")
@@ -77,63 +73,54 @@ app.Use(async (context, next) =>
     await next();
 });
 
-
 app.MapControllers();
 app.MapHub<NotifyHub>("/notifyHub");
 
-// Rotas explícitas
+// Rotas fixas
 app.MapGet("/feed", () => Results.Redirect("/painel.html"));
 app.MapGet("/create-post", () => Results.Redirect("/create-post.html"));
 app.MapGet("/alerts", () => Results.Redirect("/alerts.html"));
 app.MapGet("/events", () => Results.Redirect("/events.html"));
 
-// Endpoint SignalR
+// Endpoint SignalR universal
 app.MapPost("/notify", async (IHubContext<NotifyHub> hub, Message msg) =>
 {
     await hub.Clients.All.SendAsync("ReceiveMessage", msg.User, msg.Text);
     return Results.Ok();
 });
 
-
-// ---------------------------------------------------
-// 🔧 Banco de dados: cria + executa migrações se necessário
-// ---------------------------------------------------
+// Aplicar migrações automaticamente
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
     try
     {
-        Console.WriteLine("📦 Verificando banco de dados...");
-        db.Database.EnsureCreated();
+        Console.WriteLine("📦 Verificando banco remoto...");
+
         var pending = db.Database.GetPendingMigrations();
 
         if (pending.Any())
         {
-            Console.WriteLine("🚀 Aplicando migrações pendentes...");
+            Console.WriteLine("🚀 Aplicando migrações...");
             db.Database.Migrate();
-            Console.WriteLine("✅ Migrações aplicadas com sucesso!");
+            Console.WriteLine("✅ Migrações aplicadas!");
         }
         else
         {
-            Console.WriteLine("✅ Nenhuma migração pendente.");
+            Console.WriteLine("✔ Nenhuma migração pendente.");
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"⚠️ Falha ao aplicar migrações: {ex.Message}");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("❌ Erro ao conectar ou migrar banco:");
+        Console.WriteLine(ex.Message);
+        Console.ResetColor();
     }
 }
 
-builder.WebHost.UseShutdownTimeout(TimeSpan.FromSeconds(10));
 app.Run();
 
+// Records + Hub
 public record Message(string User, string Text);
-
-public class NotifyHub : Hub
-{
-    public async Task Register(string name) =>
-        await Clients.All.SendAsync("UserConnected", name);
-
-    public async Task Unregister(string name) =>
-        await Clients.All.SendAsync("UserDisconnected", name);
-}
