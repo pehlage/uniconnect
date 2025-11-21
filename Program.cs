@@ -18,11 +18,14 @@ builder.WebHost.UseShutdownTimeout(TimeSpan.FromSeconds(10));
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Configura EF + SQL Server Express remoto
+// builder.Services.AddDbContext<AppDbContext>(options =>
+// {
+//     options.UseSqlServer(conn,
+//         sql => sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null));
+// });
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlServer(conn,
-        sql => sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null));
-});
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // CORS liberado (frontend local e clientes remotos)
 builder.Services.AddCors(o =>
