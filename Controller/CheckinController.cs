@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using UniConnect.Server.Data;
 using UniConnect.Server.Dtos;
 using UniConnect.Server.Models;
-using UniConnect.Server.Hubs; // ajuste se usou outro namespace
+using UniConnect.Server.Hubs;
 
 namespace UniConnect.Server.Controllers
 {
@@ -27,17 +27,18 @@ namespace UniConnect.Server.Controllers
             var list = await _db.Checkins
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
+
             return Ok(list);
         }
 
-        [HttpPost]
+       [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCheckinDto dto)
         {
             var rec = new CheckinRecord
             {
                 Type = dto.Type ?? "visitor",
                 Name = dto.Name,
-                LastName = dto.LastName,
+                LastName = dto.LastName ?? "",
                 Faculty = dto.Faculty,
                 Course = dto.Course,
                 Semester = dto.Semester,
@@ -48,7 +49,7 @@ namespace UniConnect.Server.Controllers
             _db.Checkins.Add(rec);
             await _db.SaveChangesAsync();
 
-            // 1) Emitimos um evento estruturado (objeto) para o painel
+            // 1) Emite evento estruturado (objeto) — feed.js já tem handler para NewCheckin
             try
             {
                 await _hub.Clients.All.SendAsync("NewCheckin", new {
@@ -63,18 +64,28 @@ namespace UniConnect.Server.Controllers
                     createdAt = rec.CreatedAt
                 });
 
-                // 2) Também emitimos uma mensagem compatível com ReceiveMessage
-                //    (mantém seu front atual funcionando sem alterar)
+                // 2) Emite também a mensagem legível (compatibilidade)
                 var user = rec.Name ?? "Visitante";
-                var text = $"Check-in: {rec.Type} — {rec.Name} chegou agora!";
-                await _hub.Clients.All.SendAsync("ReceiveMessage", user, text);
+                var text = $"{rec.Name} — {rec.Course ?? "—"} / {rec.Faculty ?? "—"} / sem: {rec.Semester ?? "—"}";
+                await _hub.Clients.All.SendAsync("NewCheckin", new {
+                    id = rec.Id,
+                    type = rec.Type,
+                    name = rec.Name,
+                    lastName = rec.LastName,
+                    faculty = rec.Faculty,
+                    course = rec.Course,
+                    semester = rec.Semester,
+                    rating = rec.Rating,
+                    createdAt = rec.CreatedAt
+                });
             }
             catch
             {
-                // não interrompe a API se hub falhar, apenas logue se quiser
+                // Se o hub falhar, não interrompe a API. Opcional: log.
             }
 
             return CreatedAtAction(nameof(GetAll), new { id = rec.Id }, rec);
         }
+
     }
 }

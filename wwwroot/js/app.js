@@ -15,6 +15,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   let liveFeed = [];       // dados recebidos ao vivo via SignalR
   const seenSignatures = new Set(); // evita duplicação (user|text)
 
+
+  setInterval(async () => {
+  const resp = await fetch("/api/checkins");
+  const data = await resp.json();
+  
+  feedEl.innerHTML = "";
+  data
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .forEach(rec => {
+      renderPost(
+        rec.name,
+        `Check-in: ${rec.type} — ${rec.name} chegou agora!`,
+        rec.createdAt,
+        rec
+      );
+    });
+}, 5000); // atualiza a cada 5 segundos
+
   // ==========================================================
   //  RENDERIZAÇÃO (Posts + Check-ins)
   // ==========================================================
@@ -152,11 +170,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==========================================================
   //  ADICIONA AO FEED (evita duplicação e re-render ordenado)
   // ==========================================================
-  function makeSignature(item) {
-    const u = (item.user ?? "").toString().trim();
-    const t = (item.text ?? "").toString().trim();
-    return `${u}|${t}`;
-  }
+function makeSignature(item) {
+  if (item.rec && item.rec.id) return `id:${item.rec.id}`;
+  const u = (item.user ?? "").toString().trim();
+  const t = (item.text ?? "").toString().trim();
+  return `${u}|${t}`;
+}
 
   function addToFeed(item) {
     // normaliza createdAt
@@ -177,9 +196,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const all = [...feedData, ...liveFeed];
     all.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    // renderiza
-    feedEl.innerHTML = "";
-    all.forEach(i => renderPost(i.user, i.text, i.createdAt, i.rec));
+
+    // Só adiciona o novo item, sem apagar o feed inteiro
+    renderPost(item.user, item.text, item.createdAt, item.rec);
+
   }
 
   // ==========================================================
@@ -187,46 +207,91 @@ document.addEventListener("DOMContentLoaded", async () => {
   //  - aceita ReceiveMessage(user, text)
   //  - ou ReceiveMessage(jsonString)
   // ==========================================================
-  connection.on("ReceiveMessage", (...args) => {
-    try {
-      // caso server envie (user, text)
-      if (args.length >= 2) {
-        const user = args[0];
-        const text = args[1];
-        const item = {
-          type: text && text.startsWith("Check-in") ? "checkin" : "post",
-          user,
-          text,
-          createdAt: new Date().toISOString(),
-          rec: null
-        };
-        addToFeed(item);
-        return;
-      }
-
-      // caso envie JSON string
-      const raw = args[0];
-      if (!raw) return;
-      let parsed = raw;
-      if (typeof raw === "string") {
-        try { parsed = JSON.parse(raw); } catch { /* não JSON */ }
-      }
-
-      // parsed agora é objeto
-      if (parsed && parsed.text) {
-        const item = {
-          type: parsed.type ?? (parsed.text.startsWith("Check-in") ? "checkin" : "post"),
-          user: parsed.user ?? parsed.name ?? "Anônimo",
-          text: parsed.text,
-          createdAt: parsed.createdAt ?? new Date().toISOString(),
-          rec: parsed.rec ?? null
-        };
-        addToFeed(item);
-      }
-    } catch (err) {
-      console.error("Erro ao interpretar mensagem do SignalR:", err, args);
-    }
+  // --- RECEBENDO MENSAGENS DO SERVIDOR ---
+  connection.on("ReceiveMessage", (user, text) => {
+    const item = {
+      type: text && text.startsWith("Check-in") ? "checkin" : "post",
+      user,
+      text,
+      createdAt: new Date().toISOString(),
+      rec: null
+    };
+    addToFeed(item);
   });
+
+  // --- RECEBENDO CHECK-IN COMPLETO (objeto com todos os campos) ---
+  // --- RECEBENDO CHECK-IN COMPLETO (objeto com todos os campos) ---
+  // NOVO: check-in real vindo do servidor
+  connection.on("NewCheckin", (rec) => {
+    const item = {
+      type: "checkin",
+      user: rec.name ?? "Visitante",
+      text: `Check-in: ${rec.type} — ${rec.name} chegou agora! (Projeto Integrador)`,
+      createdAt: rec.createdAt ?? new Date().toISOString(),
+      rec: rec
+    };
+
+    addToFeed(item);
+  });
+
+  // MANTER APENAS mensagens normais aqui (posts antigos)
+  connection.on("ReceiveMessage", (user, text) => {
+    // ignora se o text for OBJETO (caso futuro)
+    if (typeof text !== "string") return;
+
+    const item = {
+      type: "post",
+      user,
+      text,
+      createdAt: new Date().toISOString(),
+      rec: null
+    };
+
+    addToFeed(item);
+  });
+
+
+// --- RECEBENDO MENSAGEM legível (user, text) para compatibilidade ---
+connection.on("ReceiveMessage", (user, textOrMaybeJson) => {
+  try {
+    // Se o server enviar object no lugar de text (por engano), normalize:
+    let text = textOrMaybeJson;
+    let rec = null;
+
+    // Se o segundo arg for string e parecer JSON, tente parsear (compatibilidade)
+    if (typeof text === "string") {
+      try {
+        const parsed = JSON.parse(text);
+        // se for um objeto com createdAt/name etc, use como rec
+        if (parsed && parsed.name) {
+          rec = parsed;
+          text = `${rec.name} — ${rec.course ?? "—"} / ${rec.faculty ?? "—"} / sem: ${rec.semester ?? "—"}`;
+        }
+      } catch (e) {
+        // não JSON -> nada a fazer
+      }
+    } else if (textOrMaybeJson && typeof textOrMaybeJson === "object") {
+      // se o server enviou 1 arg object para ReceiveMessage (inconsistência),
+      // tratamos aqui:
+      rec = textOrMaybeJson;
+      text = `${rec.name} — ${rec.course ?? "—"} / ${rec.faculty ?? "—"} / sem: ${rec.semester ?? "—"}`;
+    }
+
+    const item = {
+      type: (text && text.startsWith("Check-in")) ? "checkin" : "post",
+      user: user ?? (rec?.name ?? "Anônimo"),
+      text: text ?? "",
+      createdAt: new Date().toISOString(),
+      rec: rec
+    };
+
+    addToFeed(item);
+  } catch (err) {
+    console.error("Erro ao interpretar ReceiveMessage:", err, user, textOrMaybeJson);
+  }
+});
+
+
 
   // start connection
   try {

@@ -1,8 +1,8 @@
-// totem.js — autocomplete robusto + fluxo + SIGNALR
+// totem.js — fluxo completo + autocomplete + eventos + SEM duplicação de SignalR
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ==========================================================
-        ELEMENTOS DA TELA
+        ELEMENTOS
   ========================================================== */
   const lockScreen = document.getElementById("lockScreen");
   const totemPage = document.getElementById("totemPage");
@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const studentCard = document.getElementById("studentCard");
   const visitorCard = document.getElementById("visitorCard");
   const userTypeSelect = document.getElementById("userTypeSelect");
-
   const checkinBtn = document.getElementById("checkinBtn");
 
   const formStudent = document.getElementById("formStudent");
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedRating = null;
 
   /* ==========================================================
-        SIGNALR — envia check-in instantâneo ao painel
+        SIGNALR — apenas conecta; NÃO envia mais nada.
   ========================================================== */
   let hub = null;
 
@@ -44,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   initSignalR();
+
 
   /* ==========================================================
         LOCKSCREEN
@@ -70,47 +70,52 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 600);
   }
 
+
   /* ==========================================================
         BOTÃO VOLTAR
   ========================================================== */
   backBtn.onclick = () => location.reload();
 
+
   /* ==========================================================
-        SELEÇÃO DO TIPO
+        ESCOLHA DO TIPO
   ========================================================== */
-  studentCard && studentCard.addEventListener("click", () => {
+  studentCard?.addEventListener("click", () => {
     userType = "student";
     studentCard.classList.add("selected");
     visitorCard.classList.remove("selected");
     checkinBtn.classList.remove("hidden");
   });
 
-  visitorCard && visitorCard.addEventListener("click", () => {
+  visitorCard?.addEventListener("click", () => {
     userType = "visitor";
     visitorCard.classList.add("selected");
     studentCard.classList.remove("selected");
     checkinBtn.classList.remove("hidden");
   });
 
+
   /* ==========================================================
         INICIAR CHECK-IN
   ========================================================== */
-  checkinBtn && checkinBtn.addEventListener("click", () => {
+  checkinBtn?.addEventListener("click", () => {
     checkinBtn.classList.add("hidden");
-    userTypeSelect && userTypeSelect.classList.add("hidden");
+    userTypeSelect?.classList.add("hidden");
 
     if (userType === "student") {
       formStudent.classList.remove("hidden");
       document.getElementById("nameStudent")?.focus();
     }
+
     if (userType === "visitor") {
       formVisitor.classList.remove("hidden");
       document.getElementById("visitorName")?.focus();
     }
   });
 
+
   /* ==========================================================
-        ESTUDANTE ETAPA 1
+        ETAPA 1 — ESTUDANTE
   ========================================================== */
   document.getElementById("nextBtnStudent")?.addEventListener("click", () => {
     const name = document.getElementById("nameStudent").value.trim();
@@ -129,19 +134,20 @@ document.addEventListener("DOMContentLoaded", () => {
     formStudent2.classList.remove("hidden");
   });
 
+
   /* ==========================================================
         FINALIZAR — ESTUDANTE
   ========================================================== */
   document.getElementById("finalizeStudentBtn")?.addEventListener("click", async () => {
 
     const payload = {
-        type: "student",
-        name: studentData.name,
-        lastName: "",
-        faculty: studentData.faculty,
-        course: studentData.course,
-        semester: studentData.semester,
-        rating: selectedRating
+      type: "student",
+      name: studentData.name,
+      lastName: "",
+      faculty: studentData.faculty,
+      course: studentData.course,
+      semester: studentData.semester,
+      rating: selectedRating
     };
 
     await sendCheckin(payload);
@@ -161,18 +167,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const last = document.getElementById("visitorLastName")?.value.trim();
 
     if (!name || !last) {
-        alert("Preencha nome e sobrenome!");
-        return;
+      alert("Preencha nome e sobrenome!");
+      return;
     }
 
     const payload = {
-        type: "visitor",
-        name,
-        lastName: last,
-        faculty: "",
-        course: "",
-        semester: "",
-        rating: selectedRating
+      type: "visitor",
+      name,
+      lastName: last,
+      faculty: "",
+      course: "",
+      semester: "",
+      rating: selectedRating
     };
 
     await sendCheckin(payload);
@@ -182,38 +188,33 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => location.reload(), 2500);
   });
 
+
   /* ==========================================================
-   FUNÇÃO REUTILIZÁVEL — Envio ao banco + SignalR
+      FUNÇÃO SENDCHECKIN — AGORA **APENAS SALVA NO BANCO**
+      Nenhuma emissão manual de SignalR.
   ========================================================== */
   async function sendCheckin(payload) {
-      try {
-          // 1. Salvar no banco
-          await fetch("/api/checkins", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-          });
+    try {
 
-          // 2. Enviar ao painel via SignalR
-          if (hub) {
-              const msgText =
-                  `Check-in: ${payload.type} — ${payload.name} chegou agora! (Projeto Integrador)`;
-                
-              await hub.invoke("SendMessage", payload.name, msgText);
-          }
+      await fetch("/api/checkins", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-      } catch (err) {
-          console.error("Erro ao enviar check-in:", err);
-      }
+      // 🔥 NÃO envia nada por SignalR
+      // O backend agora dispara: NewCheckin + ReceiveMessage
+
+    } catch (err) {
+      console.error("Erro ao enviar check-in:", err);
+    }
   }
 
 
   /* ==========================================================
-        AUTOCOMPLETE + EMOJIS
-        (todo o restante do SEU CÓDIGO original permanece igual)
+        AUTOCOMPLETE, EMOJIS E UTILIDADES
   ========================================================== */
 
-  /* --------------- UTILIDADES, AUTOCOMPLETE E EMOJIS --------------- */
   function debounce(fn, ms = 180) {
     let t;
     return (...args) => {
@@ -249,11 +250,13 @@ document.addEventListener("DOMContentLoaded", () => {
   (function setupGlobalClickClose() {
     const handler = (ev) => {
       if (!ev.target.closest(".search-box")) {
-        document.querySelectorAll(".autocomplete").forEach(u => u.classList.add("hidden"));
+        document.querySelectorAll(".autocomplete")
+          .forEach(u => u.classList.add("hidden"));
       }
     };
     document.addEventListener("click", handler);
   })();
+
 
   const initializedAuto = new Set();
   function setupAutocomplete(inputId, listId, sourceArray) {
@@ -268,10 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
       list = document.createElement("ul");
       list.id = listId;
       list.className = "autocomplete hidden";
-      const parent = input.parentElement?.classList.contains("search-box")
-        ? input.parentElement
-        : input.parentElement;
-      parent.appendChild(list);
+      input.parentElement.appendChild(list);
     }
 
     function renderMatches(matches) {
@@ -285,14 +285,11 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         list.appendChild(li);
       });
-
       list.classList.toggle("hidden", matches.length === 0);
     }
 
     input.addEventListener("input", debounce(() => {
       const q = input.value.trim().toLowerCase();
-      list.innerHTML = "";
-
       if (!q) {
         list.classList.add("hidden");
         return;
@@ -305,15 +302,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (low.startsWith(q)) starts.push(s);
         else if (low.includes(q)) includes.push(s);
       }
-      const results = starts.concat(includes);
-      renderMatches(results);
+      renderMatches(starts.concat(includes));
+
     }, 160));
 
     attachKeyboardNav(input, list);
   }
 
-  /* faculdades fixas */
-  const colleges = [
+
+  setupAutocomplete("collegeStudent", "collegeListStudent", [
     "UNISO – Universidade de Sorocaba",
     "FACENS – Faculdade de Engenharia de Sorocaba",
     "UNIP Sorocaba",
@@ -324,9 +321,21 @@ document.addEventListener("DOMContentLoaded", () => {
     "Unicesumar Sorocaba",
     "Cruzeiro do Sul – Sorocaba",
     "Anhanguera Campus Nogueira"
-  ];
-  setupAutocomplete("collegeStudent", "collegeListStudent", colleges);
-  setupAutocomplete("collegeVisitor", "collegeListVisitor", colleges);
+  ]);
+
+  setupAutocomplete("collegeVisitor", "collegeListVisitor", [
+    "UNISO – Universidade de Sorocaba",
+    "FACENS – Faculdade de Engenharia de Sorocaba",
+    "UNIP Sorocaba",
+    "Anhanguera Sorocaba",
+    "Fatec Sorocaba",
+    "UNES Faculdade",
+    "UFSCar – Campus Sorocaba",
+    "Unicesumar Sorocaba",
+    "Cruzeiro do Sul – Sorocaba",
+    "Anhanguera Campus Nogueira"
+  ]);
+
 
   /* cursos */
   const fallbackUnisoCourses = [
@@ -364,7 +373,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch(() => console.warn("courses.json não encontrado, usando fallback"))
     .finally(() => setupAutocomplete("courseStudent", "courseList", unisoCourses));
 
-  /* emojis */
+
+  /* EMOJIS */
   document.querySelectorAll(".emoji").forEach(emoji => {
     emoji.addEventListener("click", () => {
       selectedRating = emoji.textContent;

@@ -18,6 +18,5 @@ namespace UniConnect.Server.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
-        
     }
 }
