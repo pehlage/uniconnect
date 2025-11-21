@@ -1,5 +1,5 @@
 /* ---------------------------------------------- */
-/* sidebar.css — Sidebar original + FIX + RESPONSIVO */
+/* sidebar.css — Sidebar + Responsivo + Hamburguer fixo */
 /* ---------------------------------------------- */
 
 .sidebar-left {
@@ -18,18 +18,11 @@
   background: linear-gradient(180deg, rgba(2,43,92,1) 0%, rgba(17,65,138,1) 100%);
   color: #fff;
 
-  box-shadow: none !important;
-  border-right: none !important;
-  outline: none !important;
-
   z-index: 9999 !important;
   transform: translateZ(0);
 }
 
-/* -----------------------------------------------------
-   LOGO / MARCA
------------------------------------------------------- */
-
+/* LOGO */
 .brand {
   display: flex;
   align-items: center;
@@ -47,10 +40,7 @@
   font-weight: 700;
 }
 
-/* -----------------------------------------------------
-   NAVEGAÇÃO
------------------------------------------------------- */
-
+/* NAV */
 .nav {
   margin-top: 18px;
   display: flex;
@@ -69,52 +59,26 @@
   color: rgba(255,255,255,0.95);
   transition: background .18s, transform .12s;
 
-  /* 🔥 Correção para remover linhas/riscos */
   text-decoration: none !important;
   border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
 }
-
-.nav-link * {
-  /* 🔥 Garante que ícone e texto não tenham underline */
-  text-decoration: none !important;
-  border: none !important;
-  outline: none !important;
-}
-
 .nav-link:hover {
   background: rgba(255,255,255,0.06);
   transform: translateX(4px);
 }
-
 .nav-link.active {
   background: rgba(255,255,255,0.12);
   font-weight: 600;
 }
 
-
-/* -----------------------------------------------------
-   FOOTER
------------------------------------------------------- */
-
+/* FOOTER */
 .sidebar-footer {
   margin-top: auto;
   display: flex;
   gap: 10px;
 }
 
-/* Remove possíveis pseudo-elementos */
-.sidebar-left::before,
-.sidebar-left::after {
-  content: none !important;
-  display: none !important;
-}
-
-/* -----------------------------------------------------
-   SIDEBAR DIREITA
------------------------------------------------------- */
-
+/* RIGHT SIDEBAR */
 .sidebar-right {
   position: fixed;
   right: 0;
@@ -128,127 +92,66 @@
   z-index: 30;
 }
 
-/* -----------------------------------------------------
-   RESPONSIVIDADE — TABLETS E CELULARES
------------------------------------------------------- */
+/* =============================================== */
+/*  BOTÃO HAMBÚRGUER — SEMPRE VISÍVEL              */
+/* =============================================== */
 
-/* ===== Tablets ===== */
-@media (max-width: 1080px) {
+#mobileMenuToggle {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 10000;
 
-  .sidebar-right {
-    display: none;
-  }
+  width: 48px;
+  height: 48px;
 
-  .content {
-    margin-right: 0 !important;
+  background: rgba(255,255,255,0.85);
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.06);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.6rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+
+  cursor: pointer;
+}
+
+/* Sempre aparece — nunca remove */
+@media (max-width: 5000px) {
+  #mobileMenuToggle {
+    display: flex !important;
   }
 }
 
-/* ===== Celulares ===== */
-@media (max-width: 1080) {
-
-  /* Sidebar recolhida */
+/* Sidebar recolhida em telas menores */
+@media (max-width: 1080px) {
   .sidebar-left {
     left: -260px;
     transition: left .25s ease;
   }
-
-  /* Sidebar aberta */
   .sidebar-left.open {
     left: 0;
   }
 
-  /* Botão flutuante hamburguer */
-  #mobileMenuToggle {
-    position: fixed;
-    top: 18px;
-    left: 18px;
-    z-index: 99999;
-
-    width: 44px;
-    height: 44px;
-
-    background: rgba(255,255,255,0.85);
-    border-radius: 14px;
-    border: 1px solid rgba(0,0,0,0.06);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 1.6rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-
-    cursor: pointer;
-  }
-
-  /* Remove margens laterais do conteúdo */
   .content {
     margin-left: 0 !important;
     padding: 18px;
   }
 
-  /* Remove sidebar direita */
   .sidebar-right {
     display: none;
   }
-
-  /* Expande o feed */
-  .feed {
-    padding-bottom: 100px;
-  }
-
-  /* ===== Ajuste para o botão NÃO ficar sobre o feed ===== */
-
-  .topbar {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-left: 64px !important; /* desloca para direita do botão */
-    margin-top: 8px;
-  }
-
-  .topbar .search input {
-    width: 100%;
-    max-width: none !important;
-  }
-
-  .feed {
-    margin-left: 64px !important;
-  }
 }
 
-/* ===== Celulares muito pequenos ===== */
-@media (max-width: 420px) {
-
-  .content {
-    padding: 12px;
-  }
-
-  #mobileMenuToggle {
-    width: 40px;
-    height: 40px;
-    font-size: 1.4rem;
-  }
-
-  .topbar {
-    margin-left: 54px !important;
-  }
-
-  .feed {
-    margin-left: 54px !important;
-  }
-}
-
-/* ============================================================
-   RESPONSIVIDADE ESPECIAL — TELAS VERTICAIS (9:16)
-   Telas altas e estreitas, como monitores girados
-============================================================ */
-
+/* =============================================== */
+/* TELAS VERTICAIS 9:16                            */
+/* =============================================== */
 @media screen and (max-width: 950px) and (min-height: 1200px) {
 
-  /* Sidebar permanece, mas o conteúdo ajusta */
   .sidebar-left {
     width: 230px;
   }
@@ -258,32 +161,25 @@
     padding: 22px;
   }
 
-  /* Feed ocupando largura maior */
-  .feed {
-    width: 96%;
-    margin: 0 auto;
-  }
-
-  /* Barra de pesquisa centralizada e alargada */
   .topbar {
     width: 95%;
     margin-left: 0 !important;
-    align-items: center;
   }
 
-  .topbar .search input {
-    width: 100% !important;
-    max-width: 600px; /* evita esticar demais */
+  .feed {
+    width: 95%;
+    margin: auto;
   }
 
-  /* Cards maiores e centralizados */
-  .post-card {
-    width: 95% !important;
-    margin: 0 auto 24px auto !important;
+  /* ✓ mantém hambúrguer */
+  #mobileMenuToggle {
+    display: flex !important;
+    top: 18px;
+    left: 18px;
   }
 }
 
-/* Variante para telas MUITO estreitas mas muito altas */
+/* TELAS EXTREMAMENTE ALTAS */
 @media screen and (max-width: 820px) and (min-height: 1300px) {
 
   .sidebar-left {
@@ -294,15 +190,14 @@
     margin-left: 200px !important;
   }
 
-  .topbar {
-    width: 90%;
-  }
-
-  .feed {
-    width: 92%;
-  }
-
+  .feed,
+  .topbar,
   .post-card {
-    width: 92% !important;
+    width: 92%;
+    margin: auto;
+  }
+
+  #mobileMenuToggle {
+    display: flex !important;
   }
 }
