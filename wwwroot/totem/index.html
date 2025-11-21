@@ -6,6 +6,7 @@
   <title>Totem Check-In — UniConnect</title>
 
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/lockscreen.css">
 </head>
 
 <body>
@@ -15,7 +16,7 @@
 ===================================================== -->
 <div id="lockScreen" class="lock-screen">
 
-  <img src="./assets/evento.jpg" class="event-poster" />
+  <img src="./assets/evento.png" class="event-poster" />
 
   <div class="lock-overlay">
     <h1 class="lock-title">Projeto Integrador</h1>
@@ -45,12 +46,10 @@
     <div id="userTypeSelect" class="card-select">
 
       <div id="studentCard" class="select-card">
-        <div class="icon">👨‍🎓</div>
         <div class="label">Sou Estudante</div>
       </div>
 
       <div id="visitorCard" class="select-card">
-        <div class="icon">🧑‍💼</div>
         <div class="label">Sou Visitante</div>
       </div>
 
@@ -62,19 +61,23 @@
     <!-- FORM ESTUDANTE -->
     <div id="formStudent" class="hidden form-block">
 
-      <input id="nameStudent" class="input" placeholder="Seu nome">
+      <input id="nameStudent" class="input" placeholder="Seu nome"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
       <div class="search-box">
-        <input id="courseStudent" class="input" placeholder="Seu curso">
+        <input id="courseStudent" class="input" placeholder="Seu curso"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <ul id="courseList" class="autocomplete hidden"></ul>
       </div>
 
       <div class="search-box">
-        <input id="collegeStudent" class="input" placeholder="Sua faculdade">
+        <input id="collegeStudent" class="input" placeholder="Sua faculdade"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <ul id="collegeListStudent" class="autocomplete hidden"></ul>
       </div>
 
-      <input id="semesterStudent" class="input" placeholder="Seu semestre (ex: 3)">
+      <input id="semesterStudent" class="input" placeholder="Seu semestre (ex: 3)"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
       <label class="label">O que está achando do evento?</label>
       <div id="ratingEvent" class="rating">
@@ -90,8 +93,11 @@
     <!-- FORM VISITANTE -->
     <div id="formVisitor" class="hidden form-block">
 
-      <input id="visitorName" class="input" placeholder="Nome">
-      <input id="visitorLastName" class="input" placeholder="Sobrenome">
+      <input id="visitorName" class="input" placeholder="Nome"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+      <input id="visitorLastName" class="input" placeholder="Sobrenome"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
       <label class="label">O que está achando do evento?</label>
       <div id="ratingEventVisitor" class="rating">

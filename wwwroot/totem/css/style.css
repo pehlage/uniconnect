@@ -12,187 +12,15 @@ html, body {
 }
 
 /* =========================================================
-   LOCK SCREEN — APPLE PRO STYLE
-========================================================= */
-.lock-screen {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-
-  animation: fadeIn .8s ease-out both;
-  background: #000;
-  touch-action: pan-y;
-}
-
-/* IMAGEM PRINCIPAL MAIS NÍTIDA E SATURADA */
-.event-poster {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(1.2) brightness(0.82);
-  animation: posterZoom 20s ease-in-out infinite alternate;
-  z-index: 1;
-}
-
-@keyframes posterZoom {
-  from { transform: scale(1.04); }
-  to   { transform: scale(1.4); }
-}
-
-/* Blur global — mais suave e natural */
-.lock-screen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  
-  backdrop-filter: blur(2px); /* blur mínimo, estilo iPhone */
-  -webkit-backdrop-filter: blur(2px);
-
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.08) 0%,
-    rgba(0,0,0,0.25) 45%,
-    rgba(0,0,0,0.55) 100%
-  );
-
-  z-index: 2;
-}
-
-/* ====== OVERLAY DO TEXTO — versão ultra-limpa ====== */
-.lock-overlay {
-  position: relative;
-  z-index: 3;
-  padding-bottom: 12vh;
-  text-align: center;
-  pointer-events: none;
-
-  /* REMOVIDO: blur circular feio */
-  /* REMOVIDO: background radial */
-
-  /* agora sem bloco atrás */
-}
-
-/* ====== TÍTULO — Apple style ====== */
-.lock-title {
-  font-size: 3.1rem;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: #fff;
-
-  /* glow suave, estilo iPhone */
-  text-shadow: 0 4px 22px rgba(0,0,0,0.85);
-
-  animation: slideUp .9s ease both;
-}
-
-/* ====== SUBTÍTULO ====== */
-.lock-sub {
-  margin-top: 12px;
-  font-size: 1.00rem;
-  opacity: 0.70;
-  color: #f2f2f2;
-
-  text-shadow: 0 2px 12px rgba(0,0,0,0.7);
-
-  animation: slideUp 1.2s ease both;
-}
-
-/* ===== ÍCONE TAP TO WAKE ===== */
-.touch-icon {
-  margin-top: 32px;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.tap-circle {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-
-  /* agora TOTALMENTE transparente */
-  background: rgba(255,255,255,0.12);
-
-  border: 2px solid rgba(255,255,255,0.25);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-
-  box-shadow:
-    0 0 18px rgba(255,255,255,0.10),
-    inset 0 0 20px rgba(255,255,255,0.15);
-
-  animation: tapPulse 2.4s ease-in-out infinite;
-}
-
-.tap-inner {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.95);
-
-  box-shadow:
-    0 0 22px rgba(255,255,255,0.85),
-    0 0 50px rgba(255,255,255,0.30);
-
-  animation: tapInnerPulse 2.4s ease-in-out infinite;
-}
-
-
-@keyframes tapPulse {
-  0% {
-    transform: scale(1);
-    box-shadow:
-      0 0 25px rgba(255,255,255,0.08),
-      inset 0 0 12px rgba(255,255,255,0.15);
-  }
-  50% {
-    transform: scale(1.08);
-    box-shadow:
-      0 0 40px rgba(255,255,255,0.18),
-      inset 0 0 20px rgba(255,255,255,0.22);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow:
-      0 0 25px rgba(255,255,255,0.08),
-      inset 0 0 12px rgba(255,255,255,0.15);
-  }
-}
-
-@keyframes tapInnerPulse {
-  0% { transform: scale(1); opacity: 0.85; }
-  50% { transform: scale(1.18); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.85; }
-}
-
-/* SAÍDA SUAVE */
-.lock-screen.hide {
-  transform: translateY(-110%);
-  opacity: 0;
-  filter: blur(10px);
-  transition: transform .8s cubic-bezier(.25,.8,.25,1),
-              opacity .6s, filter .6s;
-}
-
-/* =========================================================
-   TELA DO TOTEM — BACKGROUND APPLE
+   TELA DO TOTEM — BACKGROUND APPLE CLEAN
 ========================================================= */
 .totem-container {
   position: fixed;
   inset: 0;
-  background: linear-gradient(180deg, #081f25 0%, #07333a 100%);
+
+  /* Azul petróleo — fundo limpo */
+  background: linear-gradient(180deg, #032A35 0%, #063F47 100%);
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -214,20 +42,23 @@ html, body {
   justify-content: center;
   cursor: pointer;
   border: none;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(10px);
-  color: #fff;
+
+  /* Vidro turquesa */
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  color: #E6F4F4;
+
   font-size: 20px;
   z-index: 999;
   transition: all .2s ease;
 }
 .back-btn:hover {
-  background: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.12);
   transform: scale(1.08);
 }
 
 /* =========================================================
-   CARD CENTRAL — GLASS APPLE STYLE
+   CARD CENTRAL — GLASS APPLE STYLE + PALETA CLEAN
 ========================================================= */
 .totem-card {
   width: 92%;
@@ -235,13 +66,14 @@ html, body {
   padding: 34px;
   border-radius: 28px;
 
-  background: rgba(255,255,255,0.14);
+  /* fundo vidro azul petróleo translucido */
+  background: rgba(3, 42, 53, 0.45);
   border: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(26px);
 
   box-shadow:
-    0 20px 40px rgba(0,0,0,0.45),
-    0 0 60px rgba(0,0,0,0.25);
+    0 20px 40px rgba(0, 24, 28, 0.45),
+    0 0 60px rgba(0, 24, 28, 0.25);
 
   text-align: center;
   animation: fadeUp .8s ease both;
@@ -255,12 +87,12 @@ html, body {
 .title {
   font-size: 2.4rem;
   font-weight: 900;
-  color: #fff;
+  color: #F2F7F8; /* Branco suave */
   margin-bottom: 25px;
 }
 
 /* =========================================================
-   CARTÕES APPLE MUSIC STYLE
+   CARTÕES APPLE CLEAN
 ========================================================= */
 .card-select {
   display: flex;
@@ -272,52 +104,55 @@ html, body {
 .select-card {
   padding: 22px;
   border-radius: 22px;
-  background: rgba(255,255,255,0.14);
-  backdrop-filter: blur(22px);
-  border: 1px solid rgba(255,255,255,0.12);
+
+  /* vidro azul petróleo translúcido */
+  background: rgba(15, 69, 78, 0.25);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
   box-shadow:
-    0 8px 18px rgba(0,0,0,0.25),
-    inset 0 0 0 0 rgba(255,255,255,0.15);
+    0 8px 18px rgba(0, 24, 28, 0.25);
+
   cursor: pointer;
   transition: .28s ease;
 }
 
 .select-card:hover {
   transform: scale(1.04);
-  box-shadow:
-    0 18px 32px rgba(0,0,0,0.35),
-    inset 0 0 0 0 rgba(255,255,255,0.18);
+  background: rgba(15, 69, 78, 0.32);
 }
 
 .select-card.selected {
-  border-color: #ffd500;
-  box-shadow: 0 0 30px rgba(255,215,0,0.45);
+  border-color: #FFD36A; /* Amarelo suave */
+  box-shadow: 0 0 30px rgba(255, 211, 106, 0.45);
 }
 
 /* =========================================================
-   BOTÃO iOS
+   BOTÃO PRINCIPAL — AMARELO SUAVE (apple-like)
 ========================================================= */
 .btn {
   width: 100%;
   padding: 14px;
   border-radius: 14px;
-  background: linear-gradient(180deg,#ffd63d,#ffb300);
+  background: linear-gradient(180deg,#FFD36A,#FFB03B);
   border: none;
   font-weight: 800;
   font-size: 1.1rem;
-  color: #5b3f00;
+  color: #4D3300;
   cursor: pointer;
-  box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+
+  box-shadow: 0 10px 26px rgba(0, 24, 28, 0.25);
   transition: all .15s ease;
 }
 
 .btn:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 16px 34px rgba(0,0,0,0.33);
+  box-shadow: 0 16px 34px rgba(0, 24, 28, 0.35);
 }
 
 /* =========================================================
-   INPUTS — SPOTLIGHT STYLE
+   INPUTS — VIDRO TURQUESA
 ========================================================= */
 .form-block {
   display: flex;
@@ -333,55 +168,46 @@ html, body {
   width: 100%;
   padding: 16px 14px;
   border-radius: 14px;
+
   border: 1px solid rgba(255,255,255,0.18) !important;
-  background: rgba(255,255,255,0.10) !important ;
-  backdrop-filter: blur(18px);
-  color: #fff;
+
+  /* vidro suave */
+  background: rgba(255,255,255,0.07) !important ;
+  backdrop-filter: blur(20px);
+
+  color: #E6F4F4;
   font-size: 1.05rem;
   transition: .2s ease;
 }
 
-.input::placeholder { color: rgba(255,255,255,0.55) !important;  }
+.input::placeholder { color: rgba(255,255,255,0.50) !important; }
 
 .input:focus {
   outline: none;
   border-color: rgba(255,255,255,0.35) !important;
-  background: rgba(255,255,255,0.18);
-  box-shadow: 0 0 0 4px rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 12px rgba(255, 211, 106, 0.25);
 }
 
-/* =========================================================
-   AUTOCOMPLETE — APPLE LIKE GLASS
-========================================================= */
+/* AUTOCOMPLETE */
 .autocomplete {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(3, 42, 53, 0.65);
   backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255,255,255,0.25);
+
   box-shadow: 
-    0 8px 20px rgba(0, 0, 0, 0.20),
-    0 15px 40px rgba(0, 0, 0, 0.28);
+    0 8px 20px rgba(0, 24, 28, 0.25),
+    0 15px 40px rgba(0, 24, 28, 0.35);
+
   max-height: 200px;
   overflow-y: auto;
   z-index: 999;
   padding: 8px 0;
-  animation: fadeInList .18s ease-out;
-}
-
-@keyframes fadeInList {
-  from {
-    opacity: 0;
-    transform: translateY(6px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .autocomplete li {
@@ -389,20 +215,19 @@ html, body {
   cursor: pointer;
   font-size: 1.05rem;
   list-style: none;
-  color: #07333a;
+  color: #C9E5E8;
   font-weight: 500;
-  transition: background .15s, color .15s;
 }
 
 .autocomplete li:hover,
 .autocomplete li.focused {
-  background: rgba(255, 255, 255, 0.9);
-  color: #081f25;
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFF;
   font-weight: 600;
 }
 
 /* =========================================================
-   EMOJIS — iMessage
+   EMOJIS
 ========================================================= */
 .rating {
   display: flex;
@@ -413,8 +238,12 @@ html, body {
 .emoji {
   font-size: 2.7rem;
   opacity: .55;
-  cursor: pointer;
   transition: .18s ease;
+}
+
+.emoji.selected {
+  transform: scale(1.28);
+  filter: drop-shadow(0 0 8px rgba(255,211,106,0.35));
 }
 
 .emoji:hover, .emoji.selected {
@@ -423,7 +252,7 @@ html, body {
 }
 
 /* =========================================================
-   SUCESSO — Apple Wallet Check
+   SUCESSO — CHECK
 ========================================================= */
 .success {
   display: flex;
@@ -442,3 +271,14 @@ html, body {
    UTILITÁRIOS
 ========================================================= */
 .hidden { display: none !important; }
+
+
+/* Remove visual do autofill do Chrome */
+input::-webkit-autofill,
+input::-webkit-autofill:hover,
+input::-webkit-autofill:focus {
+  border: 1px solid rgba(255,255,255,0.18);
+  -webkit-text-fill-color: #E6F4F4;
+  box-shadow: 0 0 0px 1000px rgba(255,255,255,0.07) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
