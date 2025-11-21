@@ -133,7 +133,7 @@
 ------------------------------------------------------ */
 
 /* ===== Tablets ===== */
-@media (max-width: 1024px) {
+@media (max-width: 850px) {
 
   .sidebar-right {
     display: none;
@@ -145,7 +145,7 @@
 }
 
 /* ===== Celulares ===== */
-@media (max-width: 768px) {
+@media (max-width: 850px) {
 
   /* Sidebar recolhida */
   .sidebar-left {
