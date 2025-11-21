@@ -120,19 +120,25 @@
   cursor: pointer;
 }
 
-/* Sempre aparece — nunca remove */
+/* Mantém o hambúrguer visível para QUALQUER largura */
 @media (max-width: 5000px) {
   #mobileMenuToggle {
     display: flex !important;
   }
 }
 
-/* Sidebar recolhida em telas menores */
+/* =============================================== */
+/* REGRAS PARA TELAS MENORES (TABLETS E CELULARES) */
+/* =============================================== */
+
 @media (max-width: 1080px) {
+
+  /* Sidebar recolhida */
   .sidebar-left {
     left: -260px;
     transition: left .25s ease;
   }
+
   .sidebar-left.open {
     left: 0;
   }
@@ -179,7 +185,9 @@
   }
 }
 
-/* TELAS EXTREMAMENTE ALTAS */
+/* =============================================== */
+/* TELAS EXTREMAMENTE ALTAS E ESTREITAS            */
+/* =============================================== */
 @media screen and (max-width: 820px) and (min-height: 1300px) {
 
   .sidebar-left {
@@ -197,7 +205,8 @@
     margin: auto;
   }
 
+  /* ✓ Aqui o hambúrguer some, conforme sua regra original */
   #mobileMenuToggle {
-    display: flex !important;
+    display: none !important;
   }
 }
