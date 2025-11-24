@@ -1,0 +1,176 @@
+/* ALERTAS PREMIUM — UI Profissional estilo 2025 */
+
+.simple-alert {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 16px 20px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  font-family: "Inter", system-ui, sans-serif;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  /* animação */
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+  animation: fadeUpPrem 0.4s ease forwards;
+
+  /* sensação de card premium */
+  transition: all 0.28s cubic-bezier(.25,.1,.25,1);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 4px 14px rgba(0,0,0,0.04);
+  border-left: 5px solid transparent;
+  border-left-color: #3b82f633;
+}
+
+/* HOVER premium */
+.simple-alert:hover {
+  transform: translateY(-3px) scale(1);
+  border-left-color: #2563eb;
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.06),
+    0 10px 28px rgba(0,0,0,0.09);
+}
+
+/* container do emoji (mais clean + profissional) */
+.simple-alert .emoji {
+  font-size: 20px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.25s ease;
+}
+
+.simple-alert:hover .emoji {
+  background: #eef2ff;
+  border-color: #dbeafe;
+  transform: translateY(-1px) scale(1.05);
+}
+
+/* Texto profissional */
+.simple-alert .text {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.42;
+  letter-spacing: -0.2px;
+}
+
+/* Ícone de fechar */
+.simple-alert .close {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: 0.22s ease;
+}
+
+.simple-alert .close:hover {
+  background: #f3f4f6;
+  color: #111827;
+  transform: scale(1.18);
+}
+
+/* Animação de entrada */
+@keyframes fadeUpPrem {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animação elegante de fechamento */
+.simple-alert.closing {
+  opacity: 0 !important;
+  transform: translateY(-12px) scale(0.97) !important;
+  transition: 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ===========================
+   RESPONSIVIDADE PREMIUM
+   =========================== */
+
+/* Tablets e telas médias */
+@media (max-width: 900px) {
+  .simple-alert {
+    padding: 14px 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+
+  .simple-alert .emoji {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+
+  .simple-alert .text {
+    font-size: 14px;
+  }
+}
+
+/* Smartphones (layout compacto) */
+@media (max-width: 600px) {
+  .simple-alert {
+    padding: 12px 14px;
+    margin-bottom: 12px;
+
+    /* Evita quebrar o layout lateral do que já existe */
+    border-radius: 10px;
+    gap: 10px;
+  }
+
+  .simple-alert .emoji {
+    width: 32px;
+    height: 32px;
+    font-size: 17px;
+    border-radius: 8px;
+  }
+
+  .simple-alert .text {
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+
+  .simple-alert .close {
+    font-size: 15px;
+    padding: 4px 6px;
+  }
+}
+
+/* Smartphones bem estreitos (Modo ultra compacto) */
+@media (max-width: 420px) {
+  .simple-alert {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .simple-alert .emoji {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  .simple-alert .text {
+    font-size: 13px;
+  }
+
+  .simple-alert .close {
+    font-size: 14px;
+    padding: 3px 6px;
+  }
+}
