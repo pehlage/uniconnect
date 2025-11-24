@@ -467,123 +467,38 @@ html, body {
    📱 RESPONSIVIDADE — AJUSTE FINO PARA CELULAR (POST + CHECK-IN + HEADER)
    ============================================================ */
 
+/* ============================================================
+   📱 CORREÇÃO ABSOLUTA DO FEED — MOBILE (até 600px)
+   ============================================================ */
+
 @media (max-width: 600px) {
 
-  /* ============================================================
-     🟦 TOPBAR — título 100% centralizado no mobile
-     ============================================================ */
-  .topbar {
-    margin-bottom: 18px;
-    padding-top: 4px;
+  /* Área principal ocupa 100% sem zoom */
+  .content {
+    margin: 0 !important;
+    padding: 12px !important;
+    width: 100% !important;
   }
 
-  .topbar h1 {
-    font-size: 1.35rem !important;
-    text-align: center !important;
-    width: 100%;
-    margin: 0 auto;
-    line-height: 1.4;
-    padding: 0 45px; /* impede colisão com o botão hambúrguer */
-  }
-
-  /* ============================================================
-     🟦 FEED GERAL
-     ============================================================ */
+  /* Feed ocupa toda a largura */
   .feed {
-    gap: 16px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
-
-  /* ============================================================
-     🟦 FEED-POST (posts criados pelo usuário)
-     ============================================================ */
-  .feed-post {
-    padding: 14px;
-    border-radius: 14px;
+  /* Evita zoom forçado causado pelo desktop layout */
+  body, html {
+    overflow-x: hidden !important;
   }
 
-  .post-top {
-    gap: 10px;
-    align-items: flex-start;
-  }
-
-  .post-avatar {
-    width: 38px;
-    height: 38px;
-    font-size: 0.95rem;
-  }
-
-  .post-meta strong {
-    font-size: 0.90rem;
-  }
-
-  .post-meta .muted {
-    font-size: 0.70rem;
-  }
-
-  .post-body {
-    font-size: 0.92rem;
-    line-height: 1.35rem;
-    margin-top: 6px;
-  }
-
-  .post-actions {
-    flex-wrap: wrap;
-    gap: 10px;
-    padding-top: 10px;
-  }
-
-  .action-btn {
-    font-size: 0.82rem;
-    padding: 4px 6px;
-  }
-
-
-  /* ============================================================
-     🟦 CHECK-IN CARD (cartões animados)
-     ============================================================ */
+  /* Cards ajustados para 100% da largura da tela */
+  .feed-post,
+  .post-card,
   .checkin-card {
-    padding: 14px 16px;
-    border-radius: 14px;
-  }
-
-  .checkin-header {
-    gap: 10px;
-  }
-
-  .checkin-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 0.95rem;
-  }
-
-  .checkin-user-info strong {
-    font-size: 0.92rem;
-  }
-
-  .checkin-user-info small {
-    font-size: 0.72rem;
-  }
-
-  .checkin-body {
-    font-size: 0.90rem;
-    line-height: 1.30rem;
-  }
-
-  .checkin-meta {
-    font-size: 0.80rem;
-    padding: 10px;
-    border-left-width: 3px;
-  }
-
-  .checkin-footer {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .tag-pill {
-    font-size: 0.72rem;
-    padding: 4px 10px;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto;
   }
 }
 
