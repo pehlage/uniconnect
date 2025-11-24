@@ -120,12 +120,18 @@
   cursor: pointer;
 }
 
-/* Mantém o hambúrguer visível para QUALQUER largura */
-@media (max-width: 5000px) {
+/* Desktop — esconder hambúrguer */
+#mobileMenuToggle {
+  display: none !important;
+}
+
+/* Mobile — mostrar hambúrguer */
+@media (max-width: 1080px) {
   #mobileMenuToggle {
     display: flex !important;
   }
 }
+
 
 /* =============================================== */
 /* REGRAS PARA TELAS MENORES (TABLETS E CELULARES) */

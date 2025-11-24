@@ -72,31 +72,45 @@ html, body {
    TOPBAR
 -------------------------------------------------- */
 
+/* --------------------------------------------------
+   TOPBAR — Centralizada de verdade com hambúrguer fixo
+-------------------------------------------------- */
+
 .topbar {
+  position: relative;
+  width: 100%;
   display: flex;
+  justify-content: center;   /* centraliza o título */
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
   margin-bottom: 22px;
+  padding-top: 10px;
+}
+
+/* container interno só para não conflitar com o botão fixo */
+.topbar-inner {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  pointer-events: none; /* evita capturar clique do hambúrguer */
 }
 
 .topbar h1 {
+  margin: 0 auto;
   font-size: 1.7rem;
+  text-align: center;
+  pointer-events: auto;
 }
 
-.search input {
-  padding: 9px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(2,22,80,0.10);
-  background: rgba(255,255,255,0.85);
-  min-width: 240px;
-  font-size: 1rem;
-  transition: 0.18s;
-}
 
-.search input:focus {
-  outline: none;
-  box-shadow: 0 6px 18px rgba(2,22,80,0.10);
+
+@media (max-width: 600px) {
+  .topbar {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .search input {
+    min-width: 140px;
+  }
 }
 
 /* --------------------------------------------------
