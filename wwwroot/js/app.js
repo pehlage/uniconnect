@@ -17,21 +17,56 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   setInterval(async () => {
-  const resp = await fetch("/api/checkins");
-  const data = await resp.json();
-  
-  feedEl.innerHTML = "";
-  data
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .forEach(rec => {
-      renderPost(
-        rec.name,
-        `Check-in: ${rec.type} — ${rec.name} chegou agora!`,
-        rec.createdAt,
-        rec
-      );
-    });
-}, 5000); // atualiza a cada 5 segundos
+    try {
+      const [checkResp, postResp] = await Promise.all([
+        fetch("/api/checkins"),
+        fetch("/api/posts")
+      ]);
+
+      const checkins = checkResp.ok ? await checkResp.json() : [];
+      const posts = postResp.ok ? await postResp.json() : [];
+
+      feedData = [];
+
+      // Check-ins
+      checkins.forEach(rec => {
+        feedData.push({
+          type: "checkin",
+          user: rec.name,
+          text: `Check-in: ${rec.type} — ${rec.name} chegou agora!`,
+          createdAt: rec.createdAt,
+          rec: rec
+        });
+      });
+
+      // Posts corretos
+      posts.forEach(p => {
+        feedData.push({
+          type: "post",
+          user: p.title ?? "Anônimo",   // ← CORRETO
+          text: p.body ?? "",           // ← CORRETO
+          createdAt: p.createdAt,
+          rec: {
+            course: p.course,
+            emoji: p.emoji
+          }
+        });
+      });
+
+      // Ordena
+      feedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      // Re-renderiza
+      feedEl.innerHTML = "";
+      feedData.forEach(item => {
+        renderPost(item.user, item.text, item.createdAt, item.rec);
+      });
+
+    } catch (err) {
+      console.error("Erro no auto-refresh:", err);
+    }
+  }, 5000);
+
 
   // ==========================================================
   //  RENDERIZAÇÃO (Posts + Check-ins)
