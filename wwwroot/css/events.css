@@ -1,0 +1,414 @@
+/* ===========================================================
+   Projeto Integrador — Lista (Opção C) + Modais Premium
+   =========================================================== */
+
+.pi-group {
+  margin-bottom: 28px;
+}
+
+/* Header do grupo com divisor elegante */
+.pi-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  color: #0f1724;
+}
+
+.pi-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+  cursor: pointer;
+  transition: transform .18s ease, background .18s;
+}
+
+.pi-toggle svg {
+  transition: transform .24s cubic-bezier(.2,.9,.3,1);
+}
+
+.pi-title-wrap {
+  flex: 1;
+}
+.pi-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  color: #0b2540;
+}
+.pi-sub {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* menu 3-pontos */
+.pi-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.pi-more {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e6e9ef;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s, transform .15s;
+}
+.pi-more:hover {
+  background: #f4f6fb;
+  transform: translateY(-2px);
+}
+
+/* divisor */
+.pi-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(15,23,42,0.03), rgba(15,23,42,0.02));
+  margin: 12px 0 18px 0;
+  border-radius: 2px;
+}
+
+/* EVENT LIST (filhos) */
+.pi-list {
+  display: grid;
+  gap: 12px;
+}
+
+/* event item (compact) */
+.pi-event {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e7e9ee;
+  box-shadow: 0 2px 8px rgba(16,24,40,0.03);
+  cursor: pointer;
+  transition: transform .18s cubic-bezier(.2,.9,.3,1), box-shadow .18s;
+}
+
+.pi-event:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(16,24,40,0.06);
+}
+
+/* thumbnail */
+.pi-thumb {
+  width: 72px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f3f4f6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pi-thumb img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* info */
+.pi-ev-title {
+  font-weight:600;
+  font-size:15px;
+  color:#0b2540;
+  margin-bottom:4px;
+}
+.pi-ev-sub {
+  font-size:13px;
+  color:#6b7280;
+}
+
+/* collapsed */
+.pi-collapsed .pi-list {
+  display: none;
+}
+
+/* ===========================================================
+   MODAL OVERLAY & PREMIUM MODAL
+   =========================================================== */
+
+.pi-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6,10,18,0.55);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9995;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
+}
+.pi-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.pi-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(.94);
+  width: 820px;
+  max-width: 96%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,253,0.98));
+  border: 1px solid rgba(15,23,42,0.06);
+  box-shadow: 0 20px 60px rgba(2,6,23,0.36);
+  z-index: 9996;
+  opacity: 0;
+  transition: transform .28s cubic-bezier(.2,.9,.25,1), opacity .28s;
+  pointer-events: none;
+}
+.pi-modal.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: all;
+}
+
+/* modal imagem grande */
+.pi-modal-hero {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display:block;
+}
+
+/* modal conteúdo */
+.pi-modal-body {
+  padding: 22px 24px;
+}
+.pi-modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #072042;
+  margin-bottom: 8px;
+}
+.pi-modal-date {
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+.pi-modal-desc {
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+/* modal actions */
+.pi-modal-actions {
+  display:flex;
+  gap:12px;
+  justify-content: flex-end;
+}
+.pi-btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  background: #0b6bff;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(11,107,255,0.12);
+  transition: transform .15s, box-shadow .15s;
+}
+.pi-btn.secondary {
+  background: #f3f4f6;
+  color: #072042;
+  box-shadow: none;
+}
+.pi-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* modal close bottom */
+.pi-modal-close button {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .18s;
+}
+.pi-modal-close button:hover {
+  background: #e5e7eb;
+}
+
+/* small modal (Projeto Integrador options) */
+.pi-project-modal {
+  width: 420px;
+  max-width: 94%;
+}
+.pi-project-modal .pi-modal-body {
+  padding:16px;
+}
+
+.pi-project-list {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.pi-project-item {
+  padding:10px 12px;
+  background:#fff;
+  border-radius:10px;
+  border:1px solid #e7e9ee;
+  cursor:pointer;
+  transition: transform .12s;
+}
+.pi-project-item:hover {
+  transform: translateY(-4px);
+}
+
+/* responsive */
+@media (max-width: 880px) {
+  .pi-modal { width: 720px; }
+  .pi-modal-hero { height: 200px; }
+}
+@media (max-width: 520px) {
+  .pi-toggle, .pi-more { width: 38px; height: 38px; }
+  .pi-thumb { width: 100%; height: 160px; border-radius: 12px 12px 0 0; }
+  .pi-event { flex-direction: column; align-items:flex-start; padding: 0; overflow: hidden; }
+  .pi-event .pi-thumb { margin: 0; }
+  .pi-event .pi-info { padding: 12px; }
+  .pi-modal { width: 96%; }
+  .pi-modal-hero { height: 160px; }
+}
+
+/* ===========================================================
+   BANNER DO PROJETO INTEGRADOR (PREMIUM)
+   =========================================================== */
+
+.pi-banner {
+  width: 100%;
+  height: 180px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  position: relative;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+}
+
+.pi-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.82) saturate(1.2);
+}
+
+.pi-banner-text {
+  position: absolute;
+  bottom: 14px;
+  left: 20px;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  text-shadow: 0 4px 14px rgba(0,0,0,0.45);
+}
+
+
+/* ===========================================================
+   ANIMAÇÃO PREMIUM DA SETA
+   =========================================================== */
+
+.pi-toggle svg {
+  transition: transform .32s cubic-bezier(.17, .67, .3, 1.28), 
+              opacity .25s ease;
+}
+
+.pi-toggle:hover svg {
+  opacity: 0.85;
+  transform: scale(1.15);
+}
+
+.pi-collapsed .pi-toggle svg {
+  transform: rotate(-90deg) !important;
+}
+
+/* Sombra ao expandir */
+.pi-toggle.active {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Bounce ao expandir */
+@keyframes arrowBounce {
+  0% { transform: rotate(0deg) scale(1); }
+  40% { transform: rotate(3deg) scale(1.12); }
+  70% { transform: rotate(-2deg) scale(1.08); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.pi-toggle.animate svg {
+  animation: arrowBounce .35s ease;
+}
+
+/* ================================
+   Fade global para todos os modais
+================================ */
+
+.pi-modal,
+.pi-overlay {
+  opacity: 0;
+  transform: scale(.96);
+  transition: opacity .28s ease, transform .28s cubic-bezier(.2,.9,.3,1);
+}
+
+.pi-overlay.active {
+  opacity: 1 !important;
+}
+
+.pi-modal.active {
+  opacity: 1 !important;
+  transform: scale(1) translate(-50%, -50%) !important;
+}
+
+/* ================================
+   Modal do Mapa
+================================ */
+
+.pi-map-modal {
+  width: 700px;
+  max-width: 94%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  padding: 0;
+}
+
+.pi-map-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.pi-map-actions {
+  padding: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pi-map-actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+  font-weight: 600;
+}
+.pi-map-actions button:hover {
+  background: #d1d5db;
+}
