@@ -252,60 +252,6 @@ html, body {
 }
 
 
-/* --------------------------------------------------
-   USERS ONLINE (SIDEBAR DIREITA)
--------------------------------------------------- */
-/* -----------------------------
-   USERS ONLINE — VISUAL PREMIUM
------------------------------- */
-
-.users-list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 10px;
-  background: var(--surface);
-  border: 1px solid rgba(0,0,0,0.06);
-}
-
-/* avatar redondo */
-.user-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #ccc;
-  color: #fff;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  font-size: 15px;
-}
-
-/* status */
-.user-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  opacity: .8;
-}
-
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.status-online {
-  background: #22c55e; /* verde */
-}
-
-.status-away {
-  background: #facc15; /* amarelo */
-}
 
 /* --------------------------------------------------
    BUTTONS
