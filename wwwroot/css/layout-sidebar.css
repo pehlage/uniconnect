@@ -92,6 +92,27 @@
   z-index: 30;
 }
 
+/* Botão Entrar da sidebar — estilo fixo */
+.btn-login {
+  background: #ffffff;
+  color: #002b5c;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  width: 100%;
+  transition: .18s;
+}
+
+.btn-login:hover {
+  background: #f1f5ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,255,255,0.25);
+}
+
+
 /* =============================================== */
 /*  BOTÃO HAMBÚRGUER — SEMPRE VISÍVEL              */
 /* =============================================== */

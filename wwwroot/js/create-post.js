@@ -50,11 +50,58 @@ document.addEventListener('DOMContentLoaded', () => {
   // AUTOCOMPLETE DE CURSOS
   // ===============================
 
-  const courses = [
-    "Engenharia de Software","Ciência da Computação","Sistemas de Informação",
-    "Engenharia Elétrica","Engenharia Mecânica","Administração","Direito",
-    "Psicologia","Arquitetura","Medicina","Enfermagem","Educação Física"
-  ];
+const courses = [
+  "Engenharia de Software",
+  "Ciência da Computação",
+  "Sistemas de Informação",
+  "Engenharia Elétrica",
+  "Engenharia Mecânica",
+  "Engenharia Civil",
+  "Engenharia de Produção",
+  "Engenharia Ambiental",
+  "Engenharia Química",
+  "Engenharia Biomédica",
+  "Administração",
+  "Direito",
+  "Psicologia",
+  "Arquitetura e Urbanismo",
+  "Medicina",
+  "Enfermagem",
+  "Farmácia",
+  "Biomedicina",
+  "Educação Física — Bacharelado",
+  "Educação Física — Licenciatura",
+  "Nutrição",
+  "Fisioterapia",
+  "Odontologia",
+  "Gastronomia",
+  "Jornalismo",
+  "Publicidade e Propaganda",
+  "Relações Públicas",
+  "Design Gráfico",
+  "Design de Interiores",
+  "Design de Produto",
+  "Ciências Contábeis",
+  "Economia",
+  "Recursos Humanos",
+  "Marketing",
+  "Logística",
+  "Comércio Exterior",
+  "Análise e Desenvolvimento de Sistemas",
+  "Banco de Dados",
+  "Jogos Digitais",
+  "Redes de Computadores",
+  "Segurança da Informação",
+  "Teologia",
+  "Serviço Social",
+  "Pedagogia",
+  "Letras — Português",
+  "Letras — Inglês",
+  "Geografia",
+  "História",
+  "Matemática"
+];
+
 
   const inputCourse = document.getElementById('postCourse');
   const courseList = document.getElementById('courseList');

@@ -1,78 +1,211 @@
-/* create-post.css — styles specific to create post page */
+/* ---------------------------------------------
+   create-post.css — versão premium (melhorada)
+--------------------------------------------- */
 
 :root {
   --accent-primary: #4a6cff;
-  --shadow-2: 0 8px 25px rgba(2,22,80,0.08);
-  --shadow-3: 0 12px 40px rgba(2,22,80,0.10);
+  --accent-strong: #002b5c;
+  --input-bg: #f5f7ff;
+  --card-radius: 22px;
+  --field-radius: 14px;
+  --shadow-soft: 0 12px 35px rgba(0,0,0,0.06);
+  --shadow-focus: 0 14px 40px rgba(74,108,255,0.15);
+  --text-muted: #6b7280;
 }
 
-/* Ensure center layout when right sidebar hidden */
+/* Centralização perfeita quando não existe sidebar direita */
 .app.no-right .content {
   display:flex;
   justify-content:center;
-  align-items:flex-start;
-  padding-top:40px;
-  padding-bottom:60px;
+  padding:50px 20px 80px;
 }
 
-/* create card */
+/* ------------------------------------------------
+   CARD PRINCIPAL — visual mais premium
+------------------------------------------------ */
 .create-card {
   width:100%;
-  max-width:760px;
+  max-width:780px;
   background:#fff;
-  border-radius:18px;
-  padding:2rem;
-  box-shadow:var(--shadow-2);
+  border-radius: var(--card-radius);
+  padding:2.6rem;
+  box-shadow: var(--shadow-soft);
   display:flex;
   flex-direction:column;
-  gap:1.2rem;
-  animation: fadeInCard .28s ease-out;
+  gap:1.6rem;
+  animation: fadeInCard .25s ease-out;
+  border:1px solid rgba(0,0,0,0.04);
 }
-@keyframes fadeInCard { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+@keyframes fadeInCard {
+  from { opacity:0; transform: translateY(12px) scale(.98); }
+  to   { opacity:1; transform: none; }
+}
 
-.create-card h2 { margin:0; color:var(--accent); font-size:1.25rem; }
+.create-card h2 {
+  margin:0;
+  color:var(--accent-strong);
+  font-size:1.9rem;
+  font-weight:700;
+  letter-spacing:-0.5px;
+}
 
-/* inputs */
+/* ------------------------------------------------
+   INPUTS — estilo Material+Apple
+------------------------------------------------ */
 .material-input {
   width:100%;
-  padding:12px 14px;
-  border:none;
-  border-bottom:2px solid rgba(2,22,80,0.12);
-  background:transparent;
+  padding:14px 16px;
+  border-radius: var(--field-radius);
+  background: var(--input-bg);
+  border:1px solid rgba(0,0,0,0.05);
   font-size:1rem;
   outline:none;
-  border-radius:8px;
-  transition:.18s;
+  transition:.22s;
 }
-.material-input::placeholder { color: rgba(2,22,80,0.36); }
-.material-input:focus { border-bottom-color: var(--accent-primary); background: rgba(74,108,255,0.04); }
 
-/* textarea */
-textarea {
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:1px solid rgba(2,22,80,0.06);
-  min-height:150px;
-  background:#fbfcff;
-  transition:.18s;
+.material-input::placeholder {
+  color:rgba(0,0,0,0.40);
 }
-textarea:focus { box-shadow: 0 8px 30px rgba(74,108,255,0.08); }
 
-/* actions */
-.actions-row { display:flex; justify-content:flex-end; gap:12px; margin-top:6px; }
+.material-input:focus {
+  background:#fff;
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-focus);
+}
 
-/* dropdown */
+/* ------------------------------------------------
+   TEXTAREA — mais elegante
+------------------------------------------------ */
+textarea.material-input {
+  min-height:160px;
+  resize:none;
+  line-height:1.6;
+}
+
+/* ------------------------------------------------
+   DROPDOWN — belo, suave, moderno
+------------------------------------------------ */
 .dropdown {
-  list-style:none; padding:6px; margin-top:8px;
-  background:#fff; border-radius:12px; box-shadow:var(--shadow-3);
-  position:absolute; width:100%; max-height:220px; overflow-y:auto; display:none; z-index:999;
+  list-style:none;
+  background:#fff;
+  border-radius: var(--field-radius);
+  box-shadow: var(--shadow-soft);
+  padding:6px;
+  margin-top:6px;
+  width:100%;
+  max-height:240px;
+  overflow-y:auto;
+  display:none;
+  position:absolute;
+  z-index:50;
+  animation: fadeDropdown .18s ease-out;
 }
-.dropdown li { padding:10px 14px; border-radius:8px; cursor:pointer; transition:.12s; }
-.dropdown li:hover { background: rgba(74,108,255,0.06); padding-left:18px; }
+@keyframes fadeDropdown {
+  from { opacity:0; transform:translateY(4px); }
+  to   { opacity:1; transform:none; }
+}
 
-/* small screens */
+.dropdown li {
+  padding:12px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:.95rem;
+  transition:.15s;
+}
+.dropdown li:hover {
+  background:rgba(74,108,255,0.10);
+  padding-left:22px;
+}
+
+/* ------------------------------------------------
+   BOTÕES — modernos
+------------------------------------------------ */
+.btn {
+  background: var(--accent-primary);
+  border:none;
+  color:white;
+  font-weight:700;
+  padding:12px 18px;
+  border-radius:12px;
+  cursor:pointer;
+  transition: .22s;
+  font-size:1rem;
+  box-shadow:0 5px 18px rgba(74,108,255,0.20);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow:0 10px 25px rgba(74,108,255,0.25);
+}
+
+.btn.ghost {
+  background:#fff;
+  color:var(--accent-strong);
+  border:2px solid var(--accent-primary);
+  box-shadow:none;
+}
+
+.btn.ghost:hover {
+  background: var(--input-bg);
+  transform:none;
+}
+
+/* Linha dos botões */
+.actions-row {
+  display:flex;
+  justify-content:flex-end;
+  gap:14px;
+  margin-top:10px;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size:.85rem;
+}
+
+/* Botão Entrar da sidebar — estilo fixo */
+.btn-login {
+  background: #ffffff;
+  color: #002b5c;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  width: 100%;
+  transition: .18s;
+}
+
+.btn-login:hover {
+  background: #f1f5ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,255,255,0.25);
+}
+
+
+/* ------------------------------------------------
+   MOBILE
+------------------------------------------------ */
 @media (max-width:720px) {
-  .create-card { margin:0 12px; padding:1.2rem; max-width:calc(100% - 24px); }
-  .actions-row { justify-content:space-between; }
+
+  .create-card {
+    padding:1.6rem;
+    border-radius:16px;
+  }
+
+  .create-card h2 {
+    font-size:1.5rem;
+  }
+
+  .actions-row {
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .btn,
+  .btn.ghost {
+    width:100%;
+    text-align:center;
+  }
 }
